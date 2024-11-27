@@ -8,6 +8,7 @@ import { ServicesModule } from './services/services.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PublicationModule } from './publication/publication.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PublicationModule } from './publication/publication.module';
     GeneralTypeModule,
     ServicesModule,
     PublicationModule,
+    GalleryModule,
   ],
   providers: [ServicesService],
 })
