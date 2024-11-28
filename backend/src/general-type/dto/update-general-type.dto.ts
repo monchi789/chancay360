@@ -23,5 +23,5 @@ export class UpdateGeneralTypeDto {
 
   @IsOptional()
   @IsBoolean()
-  active: boolean;
+  active?: boolean;
 }

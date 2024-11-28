@@ -57,7 +57,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.git json
 
 # Docker
 docker-compose.yml
-./postgres
+/postgres
 
 # static files
 /uploads

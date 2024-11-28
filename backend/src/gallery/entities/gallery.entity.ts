@@ -9,14 +9,14 @@ import {
 
 @Entity()
 export class Gallery {
-  @PrimaryGeneratedColumn('uuid')
-  idGallery: string;
+  @PrimaryGeneratedColumn()
+  idGallery: number;
 
   @Column({ type: 'text', array: true })
-  image: string[];
+  images: string[];
 
-  @Column({ type: 'text' })
-  description: string;
+  @Column({ type: 'text', nullable: true })
+  description?: string;
 
   @Column({ type: Date, default: () => 'CURRENT_DATE' })
   publicationDate: Date;

@@ -34,6 +34,7 @@ export class PublicationController {
       file?: Express.Multer.File[];
     },
   ) {
+    console.log(createPublicationDto, files);
     return this.publicationService.create(createPublicationDto, files);
   }
 
@@ -63,9 +64,6 @@ export class PublicationController {
       file?: Express.Multer.File[];
     },
   ) {
-    if (!files) {
-      console.log(files);
-    }
     return this.publicationService.update(id, updatePublicationDto, files);
   }
 

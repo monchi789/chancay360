@@ -18,14 +18,30 @@ export class GeneralTypeService {
   ) {}
 
   async create(createGeneralTypeDto: CreateGeneralTypeDto) {
-    if (!Object.values(Type).includes(createGeneralTypeDto.type as Type)) {
-      throw new BadRequestException('Invalid type');
+    try {
+      if (!Object.values(Type).includes(createGeneralTypeDto.type as Type)) {
+        throw new BadRequestException('Invalid type');
+      }
+
+      const GeneralTypeExist = await this.generalTypeRepository.findOne({
+        where: { code: createGeneralTypeDto.code },
+      });
+
+      if (GeneralTypeExist) {
+        throw new BadRequestException('GeneralType already exists');
+      }
+
+      const newGeneralType =
+        this.generalTypeRepository.create(createGeneralTypeDto);
+
+      return await this.generalTypeRepository.save(newGeneralType);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(
+          `Error creating generalType: ${error.message}`,
+        );
+      }
     }
-
-    const newGeneralType =
-      this.generalTypeRepository.create(createGeneralTypeDto);
-
-    return await this.generalTypeRepository.save(newGeneralType);
   }
 
   async findAll() {

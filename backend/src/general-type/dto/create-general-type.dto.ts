@@ -19,5 +19,6 @@ export class CreateGeneralTypeDto {
   type: string;
 
   @IsBoolean()
+  @IsOptional()
   active?: boolean;
 }
