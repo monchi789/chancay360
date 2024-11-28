@@ -53,7 +53,7 @@ export class GalleryService {
     }
   }
 
-  findAll() {
+  async findAll() {
     return this.galleryRepository.find();
   }
 

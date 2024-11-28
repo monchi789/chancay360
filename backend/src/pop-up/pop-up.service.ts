@@ -1,26 +1,126 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePopUpDto } from './dto/create-pop-up.dto';
 import { UpdatePopUpDto } from './dto/update-pop-up.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PopUp } from './entities/pop-up.entity';
+import { Repository } from 'typeorm';
+import { ServicesService } from 'src/services/services.service';
 
 @Injectable()
 export class PopUpService {
-  create(createPopUpDto: CreatePopUpDto) {
-    return 'This action adds a new popUp';
+  constructor(
+    @InjectRepository(PopUp)
+    private readonly popUpRepository: Repository<PopUp>,
+    private readonly servicesService: ServicesService,
+  ) {}
+
+  async create(createPopUpDto: CreatePopUpDto, image: Express.Multer.File[]) {
+    let imagePath: string[] = [];
+
+    try {
+      if (image?.length) {
+        imagePath = await this.servicesService.uploadImage(
+          image,
+          'pop-up/images',
+        );
+      }
+
+      const popUpData = {
+        ...createPopUpDto,
+        image: imagePath,
+      };
+
+      const newPopUp = this.popUpRepository.create(popUpData);
+
+      return await this.popUpRepository.save(newPopUp);
+    } catch (error) {
+      if (imagePath.length) {
+        await this.servicesService.deleteImages(imagePath);
+      }
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(`Error creating popUp: ${error.message}`);
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all popUp`;
+  async findAll() {
+    return await this.popUpRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} popUp`;
+  async findOne(idPopUp: number) {
+    try {
+      const popUp = await this.popUpRepository.findOne({ where: { idPopUp } });
+
+      if (!popUp) {
+        throw new Error('Pop up not fount');
+      }
+
+      return popUp;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new BadRequestException('Pop Up not found');
+      }
+    }
   }
 
-  update(id: number, updatePopUpDto: UpdatePopUpDto) {
-    return `This action updates a #${id} popUp`;
+  async update(
+    idPopUp: number,
+    updatePopUpDto: UpdatePopUpDto,
+    image: Express.Multer.File[],
+  ) {
+    const popUp = await this.popUpRepository.findOne({
+      where: { idPopUp },
+    });
+
+    if (popUp) {
+      throw new NotFoundException('Pop Up not found');
+    }
+
+    let newImage: string[] = [];
+
+    try {
+      if (image?.length) {
+        newImage = await this.servicesService.uploadImage(
+          image,
+          'pop-up/images',
+        );
+      }
+
+      if (popUp.image.length) {
+        await this.servicesService.deleteImages(popUp.image).catch((error) => {
+          console.log('Error deleting image', error);
+        });
+      }
+
+      const updateData = {
+        ...updatePopUpDto,
+        ...(newImage.length && { image: newImage }),
+      };
+
+      await this.popUpRepository.update(idPopUp, updateData);
+
+      return await this.popUpRepository.findOne({ where: { idPopUp } });
+    } catch (error) {
+      if (newImage.length) {
+        await this.servicesService.deleteImages(newImage);
+      }
+
+      throw new BadRequestException(`Error updating pop up: ${error.message}`);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} popUp`;
+  async remove(idPopUp: number) {
+    const popUp = await this.popUpRepository.delete(idPopUp);
+
+    if (popUp.affected === 0) {
+      throw new BadRequestException(`Pop Up with ID ${idPopUp} not found`);
+    }
+
+    return { message: `Pop Up with ID ${idPopUp} deleted` };
   }
 }
