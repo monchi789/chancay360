@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFiles,
+} from '@nestjs/common';
 import { PopUpService } from './pop-up.service';
 import { CreatePopUpDto } from './dto/create-pop-up.dto';
 import { UpdatePopUpDto } from './dto/update-pop-up.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('pop-up')
 export class PopUpController {
   constructor(private readonly popUpService: PopUpService) {}
 
   @Post()
-  create(@Body() createPopUpDto: CreatePopUpDto) {
-    return this.popUpService.create(createPopUpDto);
+  @UseInterceptors(FilesInterceptor('image', 1))
+  create(
+    @Body() createPopUpDto: CreatePopUpDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.popUpService.create(createPopUpDto, files);
   }
 
   @Get()
@@ -23,8 +38,13 @@ export class PopUpController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePopUpDto: UpdatePopUpDto) {
-    return this.popUpService.update(+id, updatePopUpDto);
+  @UseInterceptors(FilesInterceptor('image', 1))
+  update(
+    @Param('id') id: string,
+    @Body() updatePopUpDto: UpdatePopUpDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.popUpService.update(+id, updatePopUpDto, files);
   }
 
   @Delete(':id')
