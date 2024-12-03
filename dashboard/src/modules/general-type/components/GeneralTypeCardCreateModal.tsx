@@ -1,83 +1,129 @@
 import { useState } from "react";
 import { Save } from "lucide-react";
-import { GeneralType } from "@/interfaces/GeneralType";
+import { GeneralType, Type } from "@/interfaces/GeneralType";
 import { createGeneralType } from "../services/GeneralType.api";
-import { useQueryClient } from "@tanstack/react-query";  // Asegúrate de importar useQueryClient
-
-enum Type {
-  GENERAL = "PUBLICATION",
-  SPECIFIC = "SPECIFIC",
-  OTHER = "OTHER",
-}
+import { useQueryClient } from "@tanstack/react-query";
 
 interface GeneralTypeCreateProps {
   onClose: () => void;
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
-  const queryClient = useQueryClient();  
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<GeneralType>({
     code: "",
     name: "",
     description: "",
-    type: Type.GENERAL,
+    type: Type.PUBLICATION,
     active: true,
   });
 
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
+  const [status, setStatus] = useState<
+    "idle" | "success" | "error" | "loading"
+  >("idle"); // Añadido "loading" al estado
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    > // Cambiado a manejar HTMLSelectElement también
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    const error = validateField(name, value);
+    setValidationErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
   };
 
-  const handleTypeChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, type: value }));
+  const validateField = (name: string, value: string): string => {
+    if (!value || value.length < 3) {
+      return `${name} debe tener al menos 3 caracteres`;
+    }
+    return "";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setStatus("loading");
 
-    const { code, name } = formData;
-
-    if (!code || !name) {
-      setErrorMessage("Los campos Código y Nombre son obligatorios.");
+    if (!validateForm()) {
+      setStatus("error");
+      setErrorMessage("Por favor, corrige los errores en el formulario.");
       return;
     }
 
     try {
-      await createGeneralType(formData); 
+      await createGeneralType(formData);
       setStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["general-type"] }); 
-      setTimeout(() => {
-        window.location.reload();
-      }, 50);  
-
-      setTimeout(onClose, 100);
+      queryClient.invalidateQueries({ queryKey: ["general-type"] });
+      onClose();
     } catch (error) {
-      console.error("Error al crear el tipo general:", error);
-      setErrorMessage(
-        "Error al crear el tipo general. Verifica los datos e inténtalo nuevamente."
-      );
-      setStatus("error");
+      if (error instanceof Error) {
+        setErrorMessage("Error al crear el tipo general.");
+        setStatus("error");
+      }
     }
   };
 
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    let isValid = true;
+
+    if (formData.code) {
+      const codeError = validateField("code", formData.code);
+      if (codeError) {
+        newErrors.code = codeError;
+        isValid = false;
+      }
+    }
+
+    if (formData.name) {
+      const nameError = validateField("name", formData.name);
+      if (nameError) {
+        newErrors.name = nameError;
+        isValid = false;
+      }
+    }
+
+    setValidationErrors(newErrors);
+    return isValid;
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-">
-      <h2 className="text-2xl font-bold text-gray-800">Crear Tipo General</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white p-6 rounded-lg"
+    >
+      <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">
+        Crear Tipo General
+      </h2>
 
       {status === "success" && (
-        <p className="text-green-500">Tipo general creado con éxito.</p>
+        <p className="text-green-600 bg-green-100 p-2 rounded-lg">
+          Tipo general creado con éxito.
+        </p>
       )}
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {errorMessage && (
+        <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
+          {errorMessage}
+        </div>
+      )}
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700">
             Código
           </label>
           <input
@@ -85,13 +131,19 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
             name="code"
             value={formData.code}
             onChange={handleChange}
-            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
+            className={`block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${
+              validationErrors.code
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
           />
+          {validationErrors.code && (
+            <p className="mt-1 text-sm text-red-600">{validationErrors.code}</p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700">
             Nombre
           </label>
           <input
@@ -99,33 +151,38 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
+            className={`block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${
+              validationErrors.name
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
           />
+          {validationErrors.name && (
+            <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700">
             Descripción
           </label>
-          <input
-            type="text"
+          <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700">
             Tipo
           </label>
           <select
             name="type"
             value={formData.type}
-            onChange={(e) => handleTypeChange(e.target.value)}
-            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            onChange={handleChange}
+            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
           >
             {Object.values(Type).map((type) => (
               <option key={type} value={type}>

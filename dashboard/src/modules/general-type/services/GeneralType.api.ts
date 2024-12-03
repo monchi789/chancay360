@@ -1,75 +1,62 @@
-import axiosIntance from "@/config/axios";
+import { GeneralType } from "@/interfaces/GeneralType";
+import axios from "axios";
 
-// Get all general types
-export const getAllGeneralTypes = async () => {
-  const res = await axiosIntance.get("general-type");
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+export const getAllGeneralTypes = async (): Promise<GeneralType[]> => {
+  const res = await axiosInstance.get("general-type");
   return res.data;
 };
 
-// Get a general type by id
-export const getGeneralTypeById = async (id: string) => {
+export const getGeneralTypeById = async (
+  idGeneralType: string
+): Promise<GeneralType> => {
   try {
-    const res = await axiosIntance.get(`general-type/${id}`);
+    const res = await axiosInstance.get(`general-type/${idGeneralType}`);
     return res.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      throw new Error("Error al obtener el tipo general");
-    }
-    throw error;
+    console.error("Error en getGeneralTypeById:", error);
+    throw new Error("Error al obtener el tipo general");
   }
 };
 
-// Pach a general type
-export const updateGeneralType = async (id: string, generalType: {
-  code: string;
-  name: string;
-  description?: string;
-  type: string;
-  active: boolean;
-}) => {
+export const updateGeneralType = async (
+  idGeneralType: string,
+  generalType: Partial<GeneralType>
+): Promise<GeneralType> => {
   try {
-    const res = await axiosIntance.patch(`general-type/${id}`, generalType);
+    const res = await axiosInstance.patch(
+      `general-type/${idGeneralType}`,
+      generalType
+    );
     return res.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      throw new Error("Error al actualizar el tipo general");
-    }
-    throw error;
+    console.error("Error en updateGeneralType:", error);
+    throw new Error("Error al actualizar el tipo general");
   }
 };
 
-// Create a general type
-export const createGeneralType = async (generalType: {
-  code: string;
-  name: string;
-  description?: string;
-  type: string;
-  active: boolean;
-}) => {
+export const createGeneralType = async (
+  generalType: Omit<GeneralType, "idGeneralType">
+): Promise<GeneralType> => {
   try {
-    const res = await axiosIntance.post("general-type", generalType);
+    const res = await axiosInstance.post("general-type", generalType);
     return res.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      throw new Error("Error al crear el tipo general");
-    }
-    throw error;
+    console.error("Error al crear el tipo general:", error);
+    throw new Error("Error al crear el tipo general");
   }
 };
 
-// Delete a general type
-export const deleteGeneralType = async (id: string) => {
+export const deleteGeneralType = async (
+  idGeneralType: string
+): Promise<void> => {
   try {
-    const res = await axiosIntance.delete(`general-type/${id}`);
-    return res.data;
+    await axiosInstance.delete(`general-type/${idGeneralType}`);
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      throw new Error("Error al eliminar el tipo general");
-    }
-    throw error;
+    console.error("Error al eliminar el tipo general:", error);
+    throw new Error("Error al eliminar el tipo general");
   }
 };

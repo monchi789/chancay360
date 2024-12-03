@@ -13,7 +13,6 @@ export class UpdateGeneralTypeDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(3)
   description: string;
 
   @IsOptional()

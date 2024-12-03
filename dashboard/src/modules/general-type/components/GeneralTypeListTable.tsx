@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { PacmanLoader } from "react-spinners";
 import { useGeneralTypes } from "../hooks/useGeneralTypes";
 import { deleteGeneralType } from "../services/GeneralType.api";
 import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
+import GeneralTypeEdit from "./GeneralTypeCardUpdate";
 
 const GeneralTypeList = () => {
   const {
@@ -9,16 +11,25 @@ const GeneralTypeList = () => {
     isLoading,
     isError,
     error,
-    refetch, // Usamos refetch para volver a obtener los datos después de la eliminación
+    refetch,
   } = useGeneralTypes();
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleEdit = (id: string) => {
+    setSelectedId(id);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedId(null);
+  };
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteGeneralType(id); // Llamada a la API para eliminar el tipo general
-      // Refrescar la lista después de eliminar usando refetch
-      await refetch(); // Llamamos a refetch para obtener los datos actualizados
+      await deleteGeneralType(id);
+      await refetch(); // Esto ya maneja la actualización.
     } catch (error) {
-      console.error("Error al eliminar el tipo general", error);
+      console.error("Error al eliminar el tipo general:", error);
     }
   };
 
@@ -45,50 +56,36 @@ const GeneralTypeList = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Código
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Descripcion
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Descripción
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tipo
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Estado
                 </th>
-                <th scope="col" className="relative px-6 py-3">
+                <th className="relative px-6 py-3">
                   <span className="sr-only">Acciones</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {generalTypesList.map((generalType) => (
-                <tr key={generalType.code}>
+                <tr key={generalType.idGeneralType}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {generalType.code}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {generalType.description}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {generalType.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -99,8 +96,10 @@ const GeneralTypeList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
-                      className="bg-ceruleanBlue-600 hover:bg-ceruleanBlue-900 text-white py-2 px-4 rounded-md"
-                      onClick={() => console.log(generalType.idGeneralType)}
+                      className="bg-blue-600 hover:bg-blue-900 text-white py-2 px-4 rounded-md"
+                      onClick={() =>
+                        handleEdit(generalType.idGeneralType as string)
+                      }
                     >
                       Editar
                     </button>
@@ -110,7 +109,6 @@ const GeneralTypeList = () => {
                       onConfirm={() =>
                         handleDelete(generalType.idGeneralType as string)
                       }
-                      
                     />
                   </td>
                 </tr>
@@ -121,6 +119,16 @@ const GeneralTypeList = () => {
       ) : (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
           No hay tipos generales
+        </div>
+      )}
+      {selectedId && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+            <GeneralTypeEdit
+              idGeneralType={selectedId}
+              onClose={handleCloseModal}
+            />
+          </div>
         </div>
       )}
     </div>
