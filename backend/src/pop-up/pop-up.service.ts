@@ -31,7 +31,7 @@ export class PopUpService {
 
       const popUpData = {
         ...createPopUpDto,
-        image: imagePath,
+        images: imagePath,
       };
 
       const newPopUp = this.popUpRepository.create(popUpData);
@@ -49,12 +49,15 @@ export class PopUpService {
   }
 
   async findAll() {
-    return await this.popUpRepository.find();
+    return await this.popUpRepository.find({ select: ['idPopUp', 'images'] });
   }
 
   async findOne(idPopUp: number) {
     try {
-      const popUp = await this.popUpRepository.findOne({ where: { idPopUp } });
+      const popUp = await this.popUpRepository.findOne({
+        where: { idPopUp },
+        select: ['idPopUp', 'images'],
+      });
 
       if (!popUp) {
         throw new Error('Pop up not fount');
@@ -91,15 +94,15 @@ export class PopUpService {
         );
       }
 
-      if (popUp.image.length) {
-        await this.servicesService.deleteImages(popUp.image).catch((error) => {
+      if (popUp.images.length) {
+        await this.servicesService.deleteImages(popUp.images).catch((error) => {
           console.log('Error deleting image', error);
         });
       }
 
       const updateData = {
         ...updatePopUpDto,
-        ...(newImage.length && { image: newImage }),
+        ...(newImage.length && { images: newImage }),
       };
 
       await this.popUpRepository.update(idPopUp, updateData);

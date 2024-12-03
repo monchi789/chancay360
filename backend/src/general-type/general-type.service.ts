@@ -45,13 +45,30 @@ export class GeneralTypeService {
   }
 
   async findAll() {
-    return await this.generalTypeRepository.find();
+    return await this.generalTypeRepository.find({
+      select: [
+        'idGeneralType',
+        'code',
+        'description',
+        'type',
+        'name',
+        'active',
+      ],
+    });
   }
 
   async findOne(idGeneralType: string) {
     try {
       const generalType = await this.generalTypeRepository.findOne({
         where: { idGeneralType },
+        select: [
+          'idGeneralType',
+          'code',
+          'description',
+          'type',
+          'name',
+          'active',
+        ],
       });
 
       if (!generalType) {

@@ -1,8 +1,7 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateGalleryDto {
   @IsString()
-  @MinLength(3)
   @IsOptional()
   description?: string;
 }

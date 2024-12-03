@@ -6,5 +6,5 @@ export class PopUp {
   idPopUp: number;
 
   @Column({ type: 'text' })
-  image: string[];
+  images: string[];
 }
