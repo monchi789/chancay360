@@ -10,7 +10,6 @@ export class CreateGeneralTypeDto {
   name: string;
 
   @IsString()
-  @MinLength(3)
   @IsOptional()
   description?: string;
 

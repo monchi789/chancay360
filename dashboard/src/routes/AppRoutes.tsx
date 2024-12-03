@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { PacmanLoader } from "react-spinners";
 
 const Home = lazy(() => import("@/modules/home/pages/HomeMain"));
+const GeneralType = lazy(() => import("@/modules/general-type/pages/GeneralTypeMain"));
 
 const AppRoutes = () => {
   return (
@@ -11,6 +12,7 @@ const AppRoutes = () => {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/tipo-general" element={<GeneralType />} />
         </Route>
       </Routes>
     </Suspense>

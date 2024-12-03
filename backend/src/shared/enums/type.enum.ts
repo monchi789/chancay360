@@ -1,4 +1,7 @@
 export enum Type {
-  ROLE = 'ROLE',
-  PUBLICATION = 'PUBLICATION',
+  ROLE = 'ROL',
+  PUBLICATION = 'PUBLICACION',
+  NEWS = 'NOTICIA',
+  EVENT = 'EVENTO',
+  MAGAZINE = 'REVISTA',
 }

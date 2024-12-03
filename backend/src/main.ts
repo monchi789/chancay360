@@ -2,9 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as bodyParser from 'body-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api/v1');
 
@@ -26,6 +29,19 @@ async function bootstrap() {
   const documentaryFactory = () => SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, documentaryFactory);
+
+  app.enableCors({
+    origin: configService.get('CORS_ORIGIN', '*'),
+    methods: configService.get('CORS_METHODS', 'GET,POST,PUT,DELETE,PATCH'),
+    allowedHeaders: configService.get<string>(
+      'CORS_ALLOWED_HEADERS',
+      'Content-Type,Authorization',
+    ),
+  });
+
+  // Add more limit on payload
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   await app.listen(process.env.PORT ?? 3000);
 }
