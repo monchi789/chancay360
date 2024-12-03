@@ -54,13 +54,16 @@ export class GalleryService {
   }
 
   async findAll() {
-    return this.galleryRepository.find();
+    return this.galleryRepository.find({
+      select: ['images', 'publicationDate', 'description'],
+    });
   }
 
   async findOne(idGallery: number) {
     try {
       const gallery = await this.galleryRepository.findOne({
         where: { idGallery },
+        select: ['images', 'publicationDate', 'description'],
       });
 
       if (!gallery) {

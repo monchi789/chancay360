@@ -70,13 +70,34 @@ export class PublicationService {
   }
 
   async findAll() {
-    return this.publicationRepository.find();
+    return this.publicationRepository.find({
+      select: [
+        'idPublication',
+        'author',
+        'title',
+        'content',
+        'cover',
+        'file',
+        'publicationDate',
+        'category',
+      ],
+    });
   }
 
   async findOne(idPublication: string) {
     try {
       const publication = await this.publicationRepository.findOne({
         where: { idPublication },
+        select: [
+          'idPublication',
+          'author',
+          'title',
+          'content',
+          'cover',
+          'file',
+          'publicationDate',
+          'category',
+        ],
       });
 
       if (!publication) {

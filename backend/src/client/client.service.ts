@@ -22,13 +22,32 @@ export class ClientService {
   }
 
   async findAll() {
-    return await this.clientRepository.find();
+    return await this.clientRepository.find({
+      select: [
+        'idClient',
+        'name',
+        'lastName',
+        'enterprise',
+        'position',
+        'email',
+        'authorized',
+      ],
+    });
   }
 
   async findOne(idClient: string) {
     try {
       const client = await this.clientRepository.findOne({
         where: { idClient },
+        select: [
+          'idClient',
+          'name',
+          'lastName',
+          'enterprise',
+          'position',
+          'email',
+          'authorized',
+        ],
       });
 
       if (!client) {
