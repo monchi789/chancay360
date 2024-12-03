@@ -9,8 +9,8 @@ const MainLayout = () => {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-h-screen">
-          <main className="flex-1 p-6 overflow-auto con">
-            <div className="flex justify-end p-3">
+          <main className="flex-1 p-4 overflow-auto con">
+            <div className="flex justify-end p-2">
               <ProfileImage />
             </div>
             <Outlet />
