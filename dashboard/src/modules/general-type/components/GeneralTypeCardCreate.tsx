@@ -28,13 +28,13 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
   );
   const [status, setStatus] = useState<
     "idle" | "success" | "error" | "loading"
-  >("idle"); // Añadido "loading" al estado
+  >("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > // Cambiado a manejar HTMLSelectElement también
+    > 
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

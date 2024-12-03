@@ -1,18 +1,12 @@
-import { useState } from "react";
-import { PacmanLoader } from "react-spinners";
-import { useGeneralTypes } from "../hooks/useGeneralTypes";
-import { deleteGeneralType } from "../services/GeneralType.api";
 import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
-import GeneralTypeEdit from "./GeneralTypeCardUpdate";
+import { useClient } from "../hooks/useClient";
+import { PacmanLoader } from "react-spinners";
+import { useState } from "react";
+import { deleteClient } from "../services/Client.api";
+import ClientEdit from "./ClientCardUpdate";
 
-const GeneralTypeList = () => {
-  const {
-    data: generalTypesList,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useGeneralTypes();
+const ClientList = () => {
+  const { data: clientsList, isLoading, isError, error, refetch } = useClient();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -26,10 +20,10 @@ const GeneralTypeList = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteGeneralType(id);
+      await deleteClient(id);
       await refetch();
     } catch (error) {
-      console.error("Error al eliminar el tipo general:", error);
+      console.error("Error al eliminar el cliente:", error);
     }
   };
 
@@ -49,24 +43,28 @@ const GeneralTypeList = () => {
     );
   }
 
+
   return (
     <div className="mt-6">
-      {generalTypesList?.length ? (
+      {clientsList?.length ? (
         <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Código
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Descripción
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tipo
+                  Apellido
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Empresa
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Cargo
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Estado
@@ -77,38 +75,37 @@ const GeneralTypeList = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {generalTypesList.map((generalType) => (
-                <tr key={generalType.idGeneralType}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {generalType.code}
+              {clientsList.map((client) => (
+                <tr key={client.idClient}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {client.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {generalType.description}
+                    {client.lastName}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {generalType.name}
+                    {client.enterprise}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {generalType.type}
+                    {client.position}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {client.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">
-                    {generalType.active ? "Activo" : "Inactivo"}
+                    {client.authorized ? "Autorizado" : "No Autorizado"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       className="bg-blue-600 hover:bg-blue-900 text-white py-2 px-4 rounded-md"
-                      onClick={() =>
-                        handleEdit(generalType.idGeneralType as string)
-                      }
+                      onClick={() => handleEdit(client.idClient as string)}
                     >
                       Editar
                     </button>
                     <DeleteAlertDialog
                       title="Confirmar Eliminación"
-                      description="¿Estás seguro de que quieres eliminar este tipo?"
-                      onConfirm={() =>
-                        handleDelete(generalType.idGeneralType as string)
-                      }
+                      description="¿Estás seguro de que quieres eliminar este cliente?"
+                      onConfirm={() => handleDelete(client.idClient as string)}
                     />
                   </td>
                 </tr>
@@ -118,16 +115,13 @@ const GeneralTypeList = () => {
         </div>
       ) : (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-          No hay tipos generales
+          No hay clientes
         </div>
       )}
       {selectedId && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-            <GeneralTypeEdit
-              idGeneralType={selectedId}
-              onClose={handleCloseModal}
-            />
+            <ClientEdit idClient={selectedId} onClose={handleCloseModal} />
           </div>
         </div>
       )}
@@ -135,4 +129,4 @@ const GeneralTypeList = () => {
   );
 };
 
-export default GeneralTypeList;
+export default ClientList;

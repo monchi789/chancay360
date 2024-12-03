@@ -1,11 +1,20 @@
 import { useState } from "react";
-import { Users, Home, BookUser, Library, StickyNote, PictureInPicture2, LayoutDashboard, Images} from "lucide-react";
+import {
+  Users,
+  Home,
+  BookUser,
+  Library,
+  StickyNote,
+  PictureInPicture2,
+  LayoutDashboard,
+  Images,
+} from "lucide-react";
 import logoWhite from "@/assets/images/logo-white.svg";
 
 const items = [
   {
     title: "Inicio",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
@@ -15,7 +24,7 @@ const items = [
   },
   {
     title: "Clientes",
-    url: "#",
+    url: "/cliente",
     icon: BookUser,
   },
   {
@@ -31,7 +40,7 @@ const items = [
   {
     title: "Galeria",
     url: "#",
-    icon: Images
+    icon: Images,
   },
   {
     title: "Tipo General",
@@ -77,11 +86,10 @@ const AppSidebar = () => {
         </div>
       </div>
 
-      {/* Higher Positioned Collapse Button */}
-
+      {/* Collapse Button */}
       <a
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`absolute top-16 -right-4 transform bg-mediumPurple-700 text-white rounded-lg p-1 hover:bg-mediumPurple-800 transition-transform duration-500 shadow-lg ${
+        className={`absolute top-10 -right-4 transform bg-mediumPurple-700 text-white rounded-lg p-1 hover:bg-mediumPurple-800 transition-transform duration-500 shadow-lg ${
           isCollapsed ? "rotate-180" : ""
         }`}
       >
