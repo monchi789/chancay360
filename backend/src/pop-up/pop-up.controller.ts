@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFiles, Query,
 } from '@nestjs/common';
 import { PopUpService } from './pop-up.service';
 import { CreatePopUpDto } from './dto/create-pop-up.dto';
 import { UpdatePopUpDto } from './dto/update-pop-up.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import {PaginationDto} from "../shared/dto/pagination.dto";
 
 @Controller('pop-up')
 export class PopUpController {
@@ -28,8 +29,8 @@ export class PopUpController {
   }
 
   @Get()
-  findAll() {
-    return this.popUpService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.popUpService.findAll(paginationDto);
   }
 
   @Get(':id')

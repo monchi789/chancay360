@@ -5,11 +5,12 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete, Query,
 } from '@nestjs/common';
 import { GeneralTypeService } from './general-type.service';
 import { CreateGeneralTypeDto } from './dto/create-general-type.dto';
 import { UpdateGeneralTypeDto } from './dto/update-general-type.dto';
+import {PaginationDto} from "../shared/dto/pagination.dto";
 
 @Controller('general-type')
 export class GeneralTypeController {
@@ -21,8 +22,8 @@ export class GeneralTypeController {
   }
 
   @Get()
-  findAll() {
-    return this.generalTypeService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.generalTypeService.findAll(paginationDto);
   }
 
   @Get('publication')

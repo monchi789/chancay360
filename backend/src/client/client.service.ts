@@ -8,6 +8,8 @@ import { UpdateClientDto } from './dto/update-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './entities/client.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
+import { PaginationService } from 'src/shared/util/pagination.util';
 
 @Injectable()
 export class ClientService {
@@ -21,17 +23,21 @@ export class ClientService {
     return await this.clientRepository.save(newClient);
   }
 
-  async findAll() {
-    return await this.clientRepository.find({
-      select: [
-        'idClient',
-        'name',
-        'lastName',
-        'enterprise',
-        'position',
-        'email',
-        'authorized',
-      ],
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, limit } = paginationDto || {};
+
+    return PaginationService.paginate(this.clientRepository, {
+      page,
+      limit,
+      select: {
+        idClient: true,
+        name: true,
+        lastName: true,
+        enterprise: true,
+        position: true,
+        email: true,
+        authorized: true,
+      },
     });
   }
 
