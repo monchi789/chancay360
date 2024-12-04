@@ -10,6 +10,8 @@ import { join } from 'path';
 import { PublicationModule } from './publication/publication.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { PopUpModule } from './pop-up/pop-up.module';
+import { MailModule } from './mail/mail.module';
+import {MailService} from "./mail/mail.service";
 
 @Module({
   imports: [
@@ -35,7 +37,8 @@ import { PopUpModule } from './pop-up/pop-up.module';
     PublicationModule,
     GalleryModule,
     PopUpModule,
+    MailModule,
   ],
-  providers: [ServicesService],
+  providers: [ServicesService, MailService],
 })
 export class AppModule {}
