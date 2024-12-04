@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuevo Mensaje de Contacto</title>
+  <script src="../dto/send-email.dto.ts"></script>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333333;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c5282; margin-bottom: 20px;">Nuevo mensaje de contacto</h2>
+    <p style="margin-bottom: 20px;">Se ha recibido un nuevo mensaje a través del formulario de contacto:</p>
+    <div style="background-color: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+      <p style="margin: 5px 0;"><strong>Nombre:</strong> {{firstName}}</p>
+      <p style="margin: 5px 0;"><strong>Apellidos:</strong> {{lastName}}</p>
+      <p style="margin: 5px 0;"><strong>Correo:</strong> {{email}}</p>
+      <p style="margin: 5px 0;"><strong>Teléfono:</strong> {{phoneNumber}}</p>
+    </div>
+    <div style="background-color: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+      <p style="margin: 5px 0;"><strong>Mensaje:</strong> {{message}}</p>
+    </div>
+    <div style="margin-top: 30px;">
+      <p style="margin-bottom: 5px;">Saludos,</p>
+      <p style="margin-top: 0; font-weight: bold;">El equipo de Soporte de Chancay360</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
