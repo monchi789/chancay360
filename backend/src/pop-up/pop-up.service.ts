@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PopUp } from './entities/pop-up.entity';
 import { Repository } from 'typeorm';
 import { ServicesService } from 'src/services/services.service';
+import {PaginationDto} from "../shared/dto/pagination.dto";
+import {PaginationService} from "../shared/util/pagination.util";
 
 @Injectable()
 export class PopUpService {
@@ -48,8 +50,17 @@ export class PopUpService {
     }
   }
 
-  async findAll() {
-    return await this.popUpRepository.find({ select: ['idPopUp', 'images'] });
+  async findAll(paginationDto?: PaginationDto) {
+    const {page, limit} = paginationDto || {};
+    
+    return PaginationService.paginate(this.popUpRepository, {
+      page,
+      limit,
+      select: {
+        idPopUp: true,
+        images: true,
+      },
+    });
   }
 
   async findOne(idPopUp: number) {
@@ -60,7 +71,7 @@ export class PopUpService {
       });
 
       if (!popUp) {
-        throw new Error('Pop up not fount');
+        throw new Error('Pop up not found');
       }
 
       return popUp;

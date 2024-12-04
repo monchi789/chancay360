@@ -13,7 +13,7 @@ export class CreateClientDto {
 
   @IsString()
   @MinLength(3)
-  lastname: string;
+  lastName: string;
 
   @IsString()
   @MinLength(3)

@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFiles, Query,
 } from '@nestjs/common';
 import { GalleryService } from './gallery.service';
 import { CreateGalleryDto } from './dto/create-gallery.dto';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import {PaginationDto} from "../shared/dto/pagination.dto";
 
 @Controller('gallery')
 export class GalleryController {
@@ -28,8 +29,8 @@ export class GalleryController {
   }
 
   @Get()
-  findAll() {
-    return this.galleryService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.galleryService.findAll(paginationDto);
   }
 
   @Get(':id')

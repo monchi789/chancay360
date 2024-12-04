@@ -15,7 +15,7 @@ export class UpdateClientDto {
   @IsOptional()
   @IsString()
   @MinLength(3)
-  lastname: string;
+  lastName: string;
 
   @IsOptional()
   @IsString()

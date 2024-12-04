@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Gallery } from './entities/gallery.entity';
 import { Repository } from 'typeorm';
 import { ServicesService } from 'src/services/services.service';
+import {PaginationDto} from "../shared/dto/pagination.dto";
+import {PaginationService} from "../shared/util/pagination.util";
 
 @Injectable()
 export class GalleryService {
@@ -53,17 +55,25 @@ export class GalleryService {
     }
   }
 
-  async findAll() {
-    return this.galleryRepository.find({
-      select: ['images', 'publicationDate', 'description'],
-    });
+  async findAll(paginationDto?: PaginationDto) {
+    const { page, limit } = paginationDto || {};
+    return PaginationService.paginate(this.galleryRepository, {
+      page, 
+      limit, 
+      select: {
+        idGallery: true,
+        images: true,
+        publicationDate: true,
+        description: true,
+      }
+    })
   }
 
   async findOne(idGallery: number) {
     try {
       const gallery = await this.galleryRepository.findOne({
         where: { idGallery },
-        select: ['images', 'publicationDate', 'description'],
+        select: ['idGallery', 'images', 'publicationDate', 'description'],
       });
 
       if (!gallery) {

@@ -8,12 +8,13 @@ import {
   Delete,
   UploadedFile,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFiles, Query,
 } from '@nestjs/common';
 import { PublicationService } from './publication.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {PaginationDto} from "../shared/dto/pagination.dto";
 
 @Controller('publication')
 export class PublicationController {
@@ -39,8 +40,8 @@ export class PublicationController {
   }
 
   @Get()
-  findAll() {
-    return this.publicationService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.publicationService.findAll(paginationDto);
   }
 
   @Get(':id')
