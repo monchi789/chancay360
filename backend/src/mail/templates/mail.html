@@ -3,26 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Nuevo Mensaje de Contacto</title>
-  <script src="../dto/send-email.dto.ts"></script>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; color: #333333;">
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; line-height: 1.6; background-color: #f8f8f8;">
 <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-  <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <h2 style="color: #2c5282; margin-bottom: 20px;">Nuevo mensaje de contacto</h2>
-    <p style="margin-bottom: 20px;">Se ha recibido un nuevo mensaje a través del formulario de contacto:</p>
-    <div style="background-color: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-      <p style="margin: 5px 0;"><strong>Nombre:</strong> {{firstName}}</p>
-      <p style="margin: 5px 0;"><strong>Apellidos:</strong> {{lastName}}</p>
-      <p style="margin: 5px 0;"><strong>Correo:</strong> {{email}}</p>
-      <p style="margin: 5px 0;"><strong>Teléfono:</strong> {{phoneNumber}}</p>
+  <div style="background-color: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <!-- Logo -->
+    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0;">
+      <img src="cid:logo@chancay360.com" alt="Chancay360 Logo" style="width: 180px; height: auto;">
     </div>
-    <div style="background-color: #f7fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-      <p style="margin: 5px 0;"><strong>Mensaje:</strong> {{message}}</p>
+
+    <h2 style="color: #444ADE; margin-bottom: 20px; text-align: center; font-size: 24px;">Nuevo mensaje de contacto</h2>
+
+    <p style="margin-bottom: 20px; color: #2d2d2d;">Se ha recibido un nuevo mensaje a través del formulario de
+      contacto:</p>
+
+    <!-- Información de contacto -->
+    <div
+      style="background-color: #f8f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #444ADE;">
+      <p style="margin: 8px 0;"><strong style="color: #444ADE;">Nombre:</strong> {{firstName}}</p>
+      <p style="margin: 8px 0;"><strong style="color: #444ADE;">Apellidos:</strong> {{lastName}}</p>
+      <p style="margin: 8px 0;"><strong style="color: #444ADE;">Correo:</strong> {{email}}</p>
+      <p style="margin: 8px 0;"><strong style="color: #444ADE;">Teléfono:</strong> {{phoneNumber}}</p>
     </div>
-    <div style="margin-top: 30px;">
-      <p style="margin-bottom: 5px;">Saludos,</p>
-      <p style="margin-top: 0; font-weight: bold;">El equipo de Soporte de Chancay360</p>
+
+    <!-- Mensaje -->
+    <div
+      style="background-color: #f8f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #F5A236;">
+      <p style="margin: 8px 0;"><strong style="color: #F5A236;">Mensaje:</strong></p>
+      <p style="margin: 8px 0; color: #4a4a4a;">{{message}}</p>
+    </div>
+
+    <!-- Firma -->
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; text-align: center;">
+      <p style="margin: 5px 0; color: #2d2d2d;">Saludos cordiales,</p>
+      <p style="margin: 5px 0; color: #444ADE; font-weight: bold;">Equipo de Soporte de Chancay360</p>
     </div>
   </div>
 </div>

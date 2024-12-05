@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { unlink, writeFile, mkdir } from 'fs/promises';
-import { extname, join } from 'path';
+import {BadRequestException, Injectable, Logger} from '@nestjs/common';
+import {unlink, writeFile, mkdir} from 'fs/promises';
+import {extname, join} from 'path';
 import * as fs from 'fs';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class ServicesService {
@@ -12,6 +13,7 @@ export class ServicesService {
     'image/png',
     'image/gif',
     'image/webp',
+    'image/jpg',
   ];
   private readonly MAX_PDF_SIZE = 10 * 1024 * 1024;
 
@@ -37,9 +39,16 @@ export class ServicesService {
 
       try {
         await this.ensureDirectoryExists(fullPath);
-        await writeFile(filePath, file.buffer);
-        imagePaths.push(join(relativePath, uniqueName));
-        this.logger.log(`Successfully saved image: ${filePath}`);
+
+        // Convert the image to webp format
+        const webpBuffer = await sharp(file.buffer)
+          .webp({quality: 80})
+          .toBuffer();
+        const webpFilePath = filePath.replace(extname(filePath), '.webp');
+
+        await writeFile(webpFilePath, webpBuffer);
+        imagePaths.push(join(relativePath, uniqueName.replace(extname(uniqueName), '.webp')));
+        this.logger.log(`Successfully saved image: ${webpFilePath}`);
       } catch (error) {
         this.logger.error(`Error saving image: ${filePath}`, error.stack);
         throw new BadRequestException(
@@ -148,7 +157,7 @@ export class ServicesService {
 
   private async ensureDirectoryExists(directory: string): Promise<void> {
     try {
-      await mkdir(directory, { recursive: true });
+      await mkdir(directory, {recursive: true});
     } catch (error) {
       if (error.code !== 'EEXIST') {
         throw error;
