@@ -39,7 +39,7 @@ const items = [
   },
   {
     title: "Galeria",
-    url: "#",
+    url: "/galeria",
     icon: Images,
   },
   {

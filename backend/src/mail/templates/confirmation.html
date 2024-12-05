@@ -3,149 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Confirmación de Mensaje</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Confirmación de Mensaje - Chancay360</title>
   <style>
-    /* Estilos generales */
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #333333;
-      background-color: #f4f4f4;
+    /* Reset de estilos para clientes de correo */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Estilos base */
+    body {
+      font-family: Arial, 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #2d2d2d;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+      min-width: 100%;
+    }
+
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #f8f8f8;
+      padding: 40px 0;
     }
 
     .container {
-      width: 100%;
       max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
+      margin: 0 auto;
+      padding: 30px;
       background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
-    .logo {
+    /* Encabezado y logo */
+    .header {
       text-align: center;
-      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #f0f0f0;
     }
 
     .logo img {
-      max-width: 200px;
+      width: 180px;
       height: auto;
+      margin-bottom: 25px;
     }
 
-    h2 {
-      color: #2c5282;
+    /* Contenido principal */
+    .content {
+      padding: 30px 0;
+    }
+
+    h1 {
+      color: #444ADE;
+      font-size: 24px;
+      font-weight: 700;
       margin-bottom: 20px;
-      font-size: 1.8em;
       text-align: center;
     }
 
-    p {
-      margin-bottom: 20px;
-      font-size: 1em;
-      color: #555555;
-      text-align: justify;
+    .message-box {
+      background-color: #f8f9ff;
+      border-left: 4px solid #444ADE;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 0 8px 8px 0;
     }
 
-    .message {
-      background-color: #f7fafc;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
+    .message-box h2 {
+      color: #444ADE;
+      font-size: 18px;
+      margin-bottom: 12px;
     }
 
-    .message h3 {
-      color: #2c5282;
-      margin-top: 0;
+    .message-content {
+      color: #4a4a4a;
+      font-size: 16px;
+      line-height: 1.6;
     }
 
+    /* Footer */
     .footer {
       margin-top: 30px;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 20px;
+      padding-top: 30px;
+      border-top: 2px solid #f0f0f0;
     }
 
-    .footer p {
-      margin: 5px 0;
+    .contact-info {
+      text-align: center;
+      margin-bottom: 25px;
     }
 
-    .footer a {
-      color: #4299e1;
+    .contact-info p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .contact-info a {
+      color: #444ADE;
       text-decoration: none;
+      font-weight: 500;
     }
 
-    .footer a:hover {
-      color: #2b3e50;
+    .contact-info a:hover {
+      color: #F5A236;
     }
 
-    .footer strong {
-      font-weight: bold;
+    .signature {
+      text-align: center;
+      color: #2d2d2d;
+      font-size: 15px;
+      margin-top: 20px;
+    }
+
+    .signature strong {
+      color: #444ADE;
+      font-weight: 600;
     }
 
     /* Estilos responsivos */
-    @media (max-width: 768px) {
+    @media screen and (max-width: 600px) {
+      .wrapper {
+        padding: 20px 10px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .message-box {
+        padding: 15px;
+      }
+
+      .message-content {
+        font-size: 15px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
       .container {
         padding: 15px;
       }
 
-      h2 {
-        font-size: 1.6em;
+      h1 {
+        font-size: 20px;
       }
 
-      p, .footer p {
-        font-size: 1em;
+      .contact-info p {
+        font-size: 14px;
       }
 
-      .logo img {
-        max-width: 150px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h2 {
-        font-size: 1.4em;
-      }
-
-      p, .footer p {
-        font-size: 0.9em;
-      }
-
-      .logo img {
-        max-width: 120px;
-      }
-
-      .container {
-        padding: 10px;
+      .signature {
+        font-size: 14px;
       }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="logo">
-    <img src="logo@chancay360.com" alt="Chancay360 Logo">
-  </div>
+<div class="wrapper">
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <img src="cid:logo@chancay360.com" alt="Chancay360 Logo">
+      </div>
+    </div>
 
-  <h2>Hola {{firstName}},</h2>
+    <div class="content">
+      <h1>¡Hola {{firstName}}!</h1>
 
-  <p>Gracias por contactarnos. Hemos recibido tu mensaje y te responderemos a la brevedad.</p>
+      <p>Gracias por contactarnos. Hemos recibido tu mensaje y nuestro equipo te responderá lo antes posible.</p>
 
-  <div class="message">
-    <h3>Tu mensaje:</h3>
-    <p>{{message}}</p>
-  </div>
+      <div class="message-box">
+        <h2>Tu mensaje:</h2>
+        <div class="message-content">
+          {{message}}
+        </div>
+      </div>
+    </div>
 
-  <div class="footer">
-    <p><strong>Teléfono:</strong> <a href="tel:+51940576340">+51 940 576 340</a></p>
-    <p><strong>Correo Electrónico:</strong> <a href="mailto:contacto@chancay360.com">contacto@chancay360.com</a></p>
-  </div>
+    <div class="footer">
+      <div class="contact-info">
+        <p><strong>Teléfono:</strong> <a href="tel:+51940576340">+51 940 576 340</a></p>
+        <p><strong>Correo:</strong> <a href="mailto:contacto@chancay360.com">contacto@chancay360.com</a></p>
+      </div>
 
-  <div>
-    <p>Saludos,</p>
-    <p><strong>El equipo de Soporte de Chancay360</strong></p>
+      <div class="signature">
+        <p>Saludos cordiales,</p>
+        <p><strong>Equipo de Soporte de Chancay360</strong></p>
+      </div>
+    </div>
   </div>
 </div>
 </body>

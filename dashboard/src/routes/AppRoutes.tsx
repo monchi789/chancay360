@@ -7,6 +7,7 @@ const Home = lazy(() => import("@/modules/home/pages/HomeMain"));
 const GeneralType = lazy(
   () => import("@/modules/general-type/pages/GeneralTypeMain")
 );
+const Gallery = lazy(() => import("@/modules/gallery/pages/GalleryMain"));
 const Client = lazy(() => import("@/modules/client/pages/ClientMain"));
 
 const AppRoutes = () => {
@@ -23,6 +24,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/tipo-general" element={<GeneralType />} />
           <Route path="/cliente" element={<Client />} />
+          <Route path="/galeria" element={<Gallery />} />
         </Route>
       </Routes>
     </Suspense>
