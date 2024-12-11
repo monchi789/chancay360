@@ -7,13 +7,14 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles, Query,
+  UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { GalleryService } from './gallery.service';
 import { CreateGalleryDto } from './dto/create-gallery.dto';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import {PaginationDto} from "../shared/dto/pagination.dto";
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Controller('gallery')
 export class GalleryController {

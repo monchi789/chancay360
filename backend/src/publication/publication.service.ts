@@ -9,8 +9,8 @@ import { Publication } from './entities/publication.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServicesService } from 'src/services/services.service';
-import {PaginationService} from "../shared/util/pagination.util";
-import {PaginationDto} from "../shared/dto/pagination.dto";
+import { PaginationService } from '../shared/util/pagination.util';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Injectable()
 export class PublicationService {
@@ -72,7 +72,7 @@ export class PublicationService {
   }
 
   async findAll(paginationDto?: PaginationDto) {
-    const {page, limit} = paginationDto || {};
+    const { page, limit } = paginationDto || {};
     return PaginationService.paginate(this.publicationRepository, {
       page,
       limit,
@@ -84,9 +84,9 @@ export class PublicationService {
         cover: true,
         file: true,
         publicationDate: true,
-        category: true
-      }
-    })
+        category: true,
+      },
+    });
   }
 
   async findOne(idPublication: string) {

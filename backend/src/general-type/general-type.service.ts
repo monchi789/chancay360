@@ -9,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GeneralType } from './entities/general-type.entity';
 import { Repository } from 'typeorm';
 import { Type } from 'src/shared/enums/type.enum';
-import {PaginationDto} from "../shared/dto/pagination.dto";
-import {PaginationService} from "../shared/util/pagination.util";
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationService } from '../shared/util/pagination.util';
 
 @Injectable()
 export class GeneralTypeService {
@@ -59,7 +59,7 @@ export class GeneralTypeService {
         name: true,
         active: true,
       },
-    })
+    });
   }
 
   async findOne(idGeneralType: string) {
