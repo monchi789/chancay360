@@ -29,7 +29,7 @@ const items = [
   },
   {
     title: "Publicaciones",
-    url: "#",
+    url: "/publicacion",
     icon: StickyNote,
   },
   {
@@ -55,28 +55,33 @@ const AppSidebar = () => {
   return (
     <div className="relative">
       <div
-        className={`h-screen bg-ceruleanBlue-700 ${
-          isCollapsed ? "w-14" : "w-64"
-        } transition-all duration-500 ease-in-out`}
+        className={`h-screen bg-ceruleanBlue-700 transition-all duration-500 ease-in-out overflow-hidden ${
+          isCollapsed
+            ? "w-20 opacity-80 shadow-none"
+            : "w-40 opacity-100 shadow-lg"
+        }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-center p-6">
-            <img src={logoWhite} alt="Logo de Chancay360" className="h-12" />
+            <img src={logoWhite} alt="Logo de Chancay360" className="h-12 hidden" />
           </div>
 
           {/* Navigation Items */}
-          <nav className="flex-1 px-1">
+          <nav className="flex-1 px-1 pt-10">
             <ul className="space-y-1">
               {items.map((item) => (
                 <li key={item.title}>
                   <a
                     href={item.url}
-                    className="flex items-center px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"
+                    className="flex items-center justify-start px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150 w-full"
                   >
+                    {/* Aseguramos que el icono se alinee a la izquierda */}
                     <item.icon className="h-4 w-4" />
+                    
+                    {/* Mostrar el texto solo si el sidebar no está colapsado */}
                     {!isCollapsed && (
-                      <span className="ml-2 text-sm">{item.title}</span>
+                      <span className="flex-1 truncate  ml-2 text-sm">{item.title}</span>
                     )}
                   </a>
                 </li>
@@ -98,5 +103,7 @@ const AppSidebar = () => {
     </div>
   );
 };
+
+
 
 export default AppSidebar;
