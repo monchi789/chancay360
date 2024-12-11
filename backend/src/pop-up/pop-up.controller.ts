@@ -7,13 +7,14 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles, Query,
+  UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { PopUpService } from './pop-up.service';
 import { CreatePopUpDto } from './dto/create-pop-up.dto';
 import { UpdatePopUpDto } from './dto/update-pop-up.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import {PaginationDto} from "../shared/dto/pagination.dto";
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Controller('pop-up')
 export class PopUpController {

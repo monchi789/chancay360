@@ -11,7 +11,9 @@ import { PublicationModule } from './publication/publication.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { PopUpModule } from './pop-up/pop-up.module';
 import { MailModule } from './mail/mail.module';
-import {MailService} from "./mail/mail.service";
+import { MailService } from './mail/mail.service';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -37,7 +39,9 @@ import {MailService} from "./mail/mail.service";
     PublicationModule,
     GalleryModule,
     PopUpModule,
+    UserModule,
     MailModule,
+    AuthModule,
   ],
   providers: [ServicesService, MailService],
 })

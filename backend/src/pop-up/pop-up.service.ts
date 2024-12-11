@@ -9,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PopUp } from './entities/pop-up.entity';
 import { Repository } from 'typeorm';
 import { ServicesService } from 'src/services/services.service';
-import {PaginationDto} from "../shared/dto/pagination.dto";
-import {PaginationService} from "../shared/util/pagination.util";
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationService } from '../shared/util/pagination.util';
 
 @Injectable()
 export class PopUpService {
@@ -51,8 +51,8 @@ export class PopUpService {
   }
 
   async findAll(paginationDto?: PaginationDto) {
-    const {page, limit} = paginationDto || {};
-    
+    const { page, limit } = paginationDto || {};
+
     return PaginationService.paginate(this.popUpRepository, {
       page,
       limit,

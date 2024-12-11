@@ -1,6 +1,6 @@
-import {BadRequestException, Injectable, Logger} from '@nestjs/common';
-import {unlink, writeFile, mkdir} from 'fs/promises';
-import {extname, join} from 'path';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { unlink, writeFile, mkdir } from 'fs/promises';
+import { extname, join } from 'path';
 import * as fs from 'fs';
 import * as sharp from 'sharp';
 
@@ -42,12 +42,14 @@ export class ServicesService {
 
         // Convert the image to webp format
         const webpBuffer = await sharp(file.buffer)
-          .webp({quality: 80})
+          .webp({ quality: 80 })
           .toBuffer();
         const webpFilePath = filePath.replace(extname(filePath), '.webp');
 
         await writeFile(webpFilePath, webpBuffer);
-        imagePaths.push(join(relativePath, uniqueName.replace(extname(uniqueName), '.webp')));
+        imagePaths.push(
+          join(relativePath, uniqueName.replace(extname(uniqueName), '.webp')),
+        );
         this.logger.log(`Successfully saved image: ${webpFilePath}`);
       } catch (error) {
         this.logger.error(`Error saving image: ${filePath}`, error.stack);
@@ -157,7 +159,7 @@ export class ServicesService {
 
   private async ensureDirectoryExists(directory: string): Promise<void> {
     try {
-      await mkdir(directory, {recursive: true});
+      await mkdir(directory, { recursive: true });
     } catch (error) {
       if (error.code !== 'EEXIST') {
         throw error;
