@@ -1,9 +1,5 @@
 import { GeneralType } from "@/interfaces/GeneralType";
-import axios from "axios";
-
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
+import axiosInstance from "@/config/axios.ts";
 
 export const getAllGeneralTypes = async (): Promise<GeneralType[]> => {
   const res = await axiosInstance.get("general-type");
@@ -16,9 +12,8 @@ export const getGeneralTypeById = async (
   try {
     const res = await axiosInstance.get(`general-type/${idGeneralType}`);
     return res.data;
-  } catch (error) {
-    console.error("Error en getGeneralTypeById:", error);
-    throw new Error("Error al obtener el tipo general");
+  } catch {
+    throw new Error("Error on get the general type by ID");
   }
 };
 
