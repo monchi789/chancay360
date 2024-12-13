@@ -1,26 +1,34 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFiles,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { PopUpService } from './pop-up.service';
-import { CreatePopUpDto } from './dto/create-pop-up.dto';
-import { UpdatePopUpDto } from './dto/update-pop-up.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import {PopUpService} from './pop-up.service';
+import {CreatePopUpDto} from './dto/create-pop-up.dto';
+import {UpdatePopUpDto} from './dto/update-pop-up.dto';
+import {FilesInterceptor} from '@nestjs/platform-express';
+import {PaginationDto} from '../shared/dto/pagination.dto';
+import {Auth} from "../auth/decorators/auth.decorators";
+import {Rol} from "../shared/enums/rol.enum";
+import {AuthGuard} from "../auth/guard/auth.guard";
+import {RolesGuard} from "../auth/guard/roles.guard";
 
 @Controller('pop-up')
 export class PopUpController {
-  constructor(private readonly popUpService: PopUpService) {}
+  constructor(private readonly popUpService: PopUpService) {
+  }
 
   @Post()
+  @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
+  @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(FilesInterceptor('image', 1))
   create(
     @Body() createPopUpDto: CreatePopUpDto,
@@ -40,6 +48,8 @@ export class PopUpController {
   }
 
   @Patch(':id')
+  @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
+  @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(FilesInterceptor('image', 1))
   update(
     @Param('id') id: string,
@@ -50,6 +60,8 @@ export class PopUpController {
   }
 
   @Delete(':id')
+  @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
     return this.popUpService.remove(+id);
   }

@@ -77,7 +77,7 @@ export class GalleryService {
       });
 
       if (!gallery) {
-        throw new Error('Gallery not found');
+        new Error('Gallery not found');
       }
 
       return gallery;

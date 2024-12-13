@@ -1,48 +1,25 @@
-import {AuthState, LoginCredentials} from "@/modules/auth/types/auth.ts";
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import authService from "@/modules/auth/redux/authService.ts";
-import Cookies from 'js-cookie';
+import {AuthState, LoginCredentials, LoginResponse} from "@/modules/auth/types/auth";
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import authService from "@/modules/auth/redux/authService";
 
 const initialState: AuthState = {
   user: null,
-  accessToken: localStorage.getItem('accessToken'),
-  refreshToken: localStorage.getItem('refreshToken'),
+  accessToken: localStorage.getItem('accessToken') || null,
+  refreshToken: localStorage.getItem('refreshToken') || null,
   isLoading: false,
   isError: false,
   isSuccess: false,
   message: '',
-}
+};
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<LoginResponse, LoginCredentials, { rejectValue: string }>(
   'auth/login',
-  async (credentials: LoginCredentials, thunkAPI) => {
+  async (credentials, thunkAPI) => {
     try {
-      const response = await authService.login(credentials);
-
-      if (!response || !response.accessToken || !response.refreshToken) {
-        return {error: 'Access token or refresh token not provided'};
-      }
-
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      Cookies.set('accessToken', response.accessToken, {
-        expires: 1,
-        secure: process.env.NODE_ENV === 'production'
-      });
-
-      return response;
+      return await authService.login(credentials);
     } catch (error) {
-      let message = 'Login failed';
-
-      if (error instanceof Error) {
-        if ('response' in error && typeof error.response === 'object' && error.response !== null) {
-          message = error.message || 'Error to initialize login';
-        } else {
-          message = error.message || 'Error to initialize login';
-        }
-      }
-
-      return thunkAPI.rejectWithValue(message)
+      const message = error instanceof Error ? error.message : 'Login failed';
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -51,46 +28,25 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, thunkAPI) => {
     try {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      Cookies.remove('accessToken');
-
-      return true;
+      authService.logout();
     } catch (error) {
-      let message = 'Logout failed';
-
-      if (error instanceof Error) {
-        if ('response' in error && typeof error.response === 'object' && error.response !== null) {
-          message = error.message || 'Error to initialize logout';
-        } else {
-          message = error.message || 'Error to initialize logout';
-        }
-      }
-
-      return thunkAPI.rejectWithValue(message)
+      const message = error instanceof Error ? error.message : 'Logout failed';
+      return thunkAPI.rejectWithValue(message);
     }
   }
-)
+);
 
-export const refreshToken = createAsyncThunk(
+export const refreshToken = createAsyncThunk<string, void, { rejectValue: string }>(
   'auth/refreshToken',
   async (_, thunkAPI) => {
     try {
-      const newAccessToken = await authService.refreshToken();
-
-      localStorage.setItem('accessToken', newAccessToken);
-      Cookies.set('accessToken', newAccessToken, {
-        expires: 1,
-        secure: process.env.NODE_ENV === 'production'
-      });
-
-      return newAccessToken;
+      return await authService.refreshToken();
     } catch (error) {
-      thunkAPI.dispatch(logout());
-      throw error;
+      const message = error instanceof Error ? error.message : 'Token refresh failed';
+      return thunkAPI.rejectWithValue(message);
     }
   }
-)
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -99,42 +55,49 @@ const authSlice = createSlice({
     reset: (state) => {
       state.isLoading = false;
       state.isSuccess = false;
+      state.isError = false;
+      state.message = '';
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
         state.isLoading = false;
         state.isSuccess = true;
-        if ('user' in action.payload && 'accessToken' in action.payload && 'refreshToken' in action.payload) {
-          state.user = action.payload.user;
-          state.accessToken = action.payload.accessToken;
-          state.refreshToken = action.payload.refreshToken;
-        }
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload as string;
+        state.message = action.payload || 'Login failed';
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
       })
-
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
       })
-
-      .addCase(refreshToken.fulfilled, (state, action) => {
+      .addCase(refreshToken.fulfilled, (state, action: PayloadAction<string>) => {
         state.accessToken = action.payload;
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.user = null;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.isError = true;
+        state.message = action.payload || 'Token refresh failed';
       });
   }
 });
 
 export const {reset} = authSlice.actions;
 export default authSlice.reducer;
+

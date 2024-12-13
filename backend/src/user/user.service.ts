@@ -1,20 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {CreateUserDto} from './dto/create-user.dto';
+import {UpdateUserDto} from './dto/update-user.dto';
+import {InjectRepository} from '@nestjs/typeorm';
+import {User} from './entities/user.entity';
+import {Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Rol } from '../shared/enums/rol.enum';
+import {Rol} from '../shared/enums/rol.enum';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+  }
 
-  async create({ user, name, lastName, password, rol, email }: CreateUserDto) {
+  async create({user, name, lastName, password, rol, email}: CreateUserDto) {
     const salt = parseInt(process.env.SALT);
     const isHashed = password.startsWith('$2b$');
     const hashedPassword = isHashed
@@ -44,7 +45,7 @@ export class UserService {
 
   async findByEmailWithPassword(email: string) {
     return await this.userRepository.findOne({
-      where: { email },
+      where: {email},
       select: [
         'idUser',
         'user',
@@ -58,15 +59,15 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOneBy({email});
   }
 
   async changePassword(
     idUser: string,
-    { email, password }: { email: string; password: string },
+    {email, password}: { email: string; password: string },
   ) {
     const user = await this.userRepository.findOne({
-      where: { idUser, email },
+      where: {idUser, email},
       select: ['idUser', 'email', 'password'],
     });
 
@@ -86,11 +87,11 @@ export class UserService {
       );
     }
 
-    return { message: 'Password change correctly' };
+    return {message: 'Password change correctly'};
   }
 
   async findAll() {
-    return `This action returns all user`;
+    return await this.userRepository.find();
   }
 
   async findOne(id: number) {

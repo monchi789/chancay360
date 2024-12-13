@@ -1,9 +1,5 @@
-import { Client } from "@/interfaces/Client";
-import axios from "axios";
-
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
-});
+import axiosInstance from "@/config/axios";
+import {Client} from "@/interfaces/Client";
 
 export const getAllClients = async (): Promise<Client[]> => {
   const res = await axiosInstance.get("client");
@@ -14,9 +10,8 @@ export const getClientById = async (idClient: string): Promise<Client> => {
   try {
     const res = await axiosInstance.get(`client/${idClient}`);
     return res.data;
-  } catch (error) {
-    console.error("Error en getClientById:", error);
-    throw new Error("Error al obtener el cliente");
+  } catch {
+    throw new Error("Error to get the client by ID");
   }
 };
 
@@ -27,9 +22,8 @@ export const updateClient = async (
   try {
     const res = await axiosInstance.patch(`client/${idClient}`, client);
     return res.data;
-  } catch (error) {
-    console.error("Error en updateClient:", error);
-    throw new Error("Error al actualizar el cliente");
+  } catch {
+    throw new Error("Error to update the client");
   }
 };
 
@@ -39,17 +33,15 @@ export const createClient = async (
   try {
     const res = await axiosInstance.post("client", client);
     return res.data;
-  } catch (error) {
-    console.error("Error al crear el cliente:", error);
-    throw new Error("Error al crear el cliente");
+  } catch {
+    throw new Error("Error to create a new client");
   }
 };
 
 export const deleteClient = async (idClient: string): Promise<void> => {
   try {
     await axiosInstance.delete(`client/${idClient}`);
-  } catch (error) {
-    console.error("Error al eliminar el cliente:", error);
-    throw new Error("Error al eliminar el cliente");
+  } catch {
+    throw new Error("Error to delete de the client");
   }
 };
