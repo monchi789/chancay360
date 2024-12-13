@@ -1,6 +1,6 @@
 export interface Gallery {
   idGallery:       number;
   images:          string[];
-  description:     null;
+  description?:     null;
   publicationDate: Date;
 }
