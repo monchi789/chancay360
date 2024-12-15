@@ -20,22 +20,15 @@ export const updateGallery = async (
   formData: FormData
 ): Promise<Gallery> => {
   try {
-    // Debuggear el contenido del FormData
-    console.log('FormData contents:');
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     const res = await axiosInstance.patch(`gallery/${idGallery}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
     return res.data;
-  } catch (error) {
-    // Mejorar el manejo de errores
-    console.error('Error details:', error.response?.data);
-    throw new Error(`Error to update Gallery: ${error.response?.data?.message || error.message}`);
+  } catch {
+    throw new Error('Error to update Gallery')
+    ;
   }
 };
 
