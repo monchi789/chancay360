@@ -1,9 +1,13 @@
-import { GeneralType } from "@/interfaces/GeneralType";
+import {GeneralType} from "@/interfaces/GeneralType";
 import axiosInstance from "@/config/axios.ts";
 
 export const getAllGeneralTypes = async (): Promise<GeneralType[]> => {
-  const res = await axiosInstance.get("general-type");
-  return res.data;
+  try {
+    const res = await axiosInstance.get("general-type");
+    return res.data;
+  } catch {
+    throw new Error('Failed to get all general type')
+  }
 };
 
 export const getGeneralTypeById = async (
@@ -27,9 +31,8 @@ export const updateGeneralType = async (
       generalType
     );
     return res.data;
-  } catch (error) {
-    console.error("Error en updateGeneralType:", error);
-    throw new Error("Error al actualizar el tipo general");
+  } catch {
+    throw new Error("Error on update the general type");
   }
 };
 
@@ -39,9 +42,8 @@ export const createGeneralType = async (
   try {
     const res = await axiosInstance.post("general-type", generalType);
     return res.data;
-  } catch (error) {
-    console.error("Error al crear el tipo general:", error);
-    throw new Error("Error al crear el tipo general");
+  } catch {
+    throw new Error("Error on create the general type");
   }
 };
 
@@ -50,8 +52,7 @@ export const deleteGeneralType = async (
 ): Promise<void> => {
   try {
     await axiosInstance.delete(`general-type/${idGeneralType}`);
-  } catch (error) {
-    console.error("Error al eliminar el tipo general:", error);
-    throw new Error("Error al eliminar el tipo general");
+  } catch {
+    throw new Error("Error on delete general type");
   }
 };

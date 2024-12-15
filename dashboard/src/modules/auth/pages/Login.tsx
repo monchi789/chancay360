@@ -73,14 +73,8 @@ const Login: React.FC = () => {
           <img src={chancay360} alt='Logo wonder' className='w-32' loading='lazy'/>
         </div>
 
-        {/* Meme Section with Fixed Height */}
-        <div className='px-6'>
-          <div className='bg-gray-50 rounded-lg overflow-hidden'>
-          </div>
-        </div>
-
         {/* Login Form Section */}
-        <div className='px-6 py-8'>
+        <div className='px-6 py-2'>
           <div className='space-y-6'>
             <div className='text-center'>
               <h2 className='text-2xl font-bold text-gray-900'>Bienvenido de nuevo</h2>
@@ -101,7 +95,7 @@ const Login: React.FC = () => {
               <div className='space-y-4'>
                 <div>
                   <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
-                    Correo institucional
+                    Correo
                   </label>
                   <div className='mt-1 relative'>
                     <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
@@ -179,7 +173,7 @@ const Login: React.FC = () => {
 
               <Button
                 type='submit'
-                className='w-full bg-wonder-blue hover:bg-wonder transition-colors duration-300'
+                className='w-full text-white bg-mediumPurple-700 hover:bg-mediumPurple-800 transition-colors duration-300'
                 disabled={isLoading}
               >
                 {isLoading ? <div className="flex items-center justify-center h-screen">

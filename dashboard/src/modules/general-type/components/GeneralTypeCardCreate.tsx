@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Save } from "lucide-react";
-import { GeneralType, Type } from "@/interfaces/GeneralType";
-import { createGeneralType } from "../services/GeneralType.api";
-import { useQueryClient } from "@tanstack/react-query";
+import React, {useState} from "react";
+import {Save} from "lucide-react";
+import {GeneralType, Type} from "@/interfaces/GeneralType";
+import {createGeneralType} from "../services/GeneralType.api";
+import {useQueryClient} from "@tanstack/react-query";
 
 interface GeneralTypeCreateProps {
   onClose: () => void;
@@ -12,7 +12,7 @@ interface ValidationErrors {
   [key: string]: string;
 }
 
-const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
+const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<GeneralType>({
@@ -34,10 +34,10 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > 
+    >
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name]: value}));
 
     const error = validateField(name, value);
     setValidationErrors((prev) => ({
@@ -66,8 +66,8 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
 
     try {
       await createGeneralType(formData);
+      await queryClient.invalidateQueries({queryKey: ["general-type"]});
       setStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["general-type"] });
       onClose();
     } catch (error) {
       if (error instanceof Error) {
@@ -80,7 +80,7 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
-
+    
     if (formData.code) {
       const codeError = validateField("code", formData.code);
       if (codeError) {
@@ -199,7 +199,7 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
               name="active"
               checked={formData.active}
               onChange={(e) =>
-                setFormData({ ...formData, active: e.target.checked })
+                setFormData({...formData, active: e.target.checked})
               }
               className="rounded border-gray-300 text-blue-500 focus:border-blue-500 focus:ring-blue-500"
             />
@@ -220,7 +220,7 @@ const GeneralTypeCreate = ({ onClose }: GeneralTypeCreateProps) => {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
         >
-          <Save className="w-4 h-4 inline-block mr-1" />
+          <Save className="w-4 h-4 inline-block mr-1"/>
           Guardar
         </button>
       </div>
