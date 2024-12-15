@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import {NestFactory} from '@nestjs/core';
+import {AppModule} from './app.module';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import {ValidationPipe} from '@nestjs/common';
 import * as bodyParser from 'body-parser';
-import { ConfigService } from '@nestjs/config';
+import {ConfigService} from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,9 +40,10 @@ async function bootstrap() {
   });
 
   // Add more limit on payload
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

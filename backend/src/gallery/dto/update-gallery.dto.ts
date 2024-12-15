@@ -5,4 +5,7 @@ export class UpdateGalleryDto {
   @IsString()
   @MinLength(3)
   description?: string;
+  
+  @IsOptional()
+  existingImages?: string[];
 }

@@ -1,10 +1,10 @@
-import React, {useState} from "react";
-import {Save} from "lucide-react";
-import {GeneralType, Type} from "@/interfaces/GeneralType";
-import {createGeneralType} from "../services/GeneralType.api";
-import {useQueryClient} from "@tanstack/react-query";
+import { useState } from "react";
+import { Save } from "lucide-react";
+import { Publication } from "@/interfaces/Publication";
+import { createPublication } from "../services/Publication.api";
+import { useQueryClient } from "@tanstack/react-query";
 
-interface GeneralTypeCreateProps {
+interface PublicationCreateProps {
   onClose: () => void;
 }
 
@@ -12,16 +12,21 @@ interface ValidationErrors {
   [key: string]: string;
 }
 
-const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
+const PublicationCreate = ({ onClose }: PublicationCreateProps) => {
   const queryClient = useQueryClient();
 
-  const [formData, setFormData] = useState<GeneralType>({
-    code: "",
-    name: "",
-    description: "",
-    type: Type.PUBLICATION,
-    active: true,
+  const [formData, setFormData] = useState<Omit<Publication, "idPublication" | "deleteAt">>({
+    author: "",
+    title: "",
+    content: "",
+    cover: [],
+    publicationDate: new Date(),
+    category: "",
+    file: [],
+    createAt: new Date(),
+    updateAt: new Date(),
   });
+  
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
@@ -36,14 +41,24 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const {name, value} = e.target;
-    setFormData((prev) => ({...prev, [name]: value}));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     const error = validateField(name, value);
     setValidationErrors((prev) => ({
       ...prev,
       [name]: error,
     }));
+  };
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    fieldName: "cover" | "file"
+  ) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files).map((file) => file.name); // Simulamos que subimos archivos y usamos nombres
+      setFormData((prev) => ({ ...prev, [fieldName]: files }));
+    }
   };
 
   const validateField = (name: string, value: string): string => {
@@ -65,13 +80,13 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
     }
 
     try {
-      await createGeneralType(formData);
-      await queryClient.invalidateQueries({queryKey: ["general-type"]});
+      await createPublication(formData);
       setStatus("success");
+      queryClient.invalidateQueries({ queryKey: ["publications"] });
       onClose();
     } catch (error) {
       if (error instanceof Error) {
-        setErrorMessage("Error al crear el tipo general.");
+        setErrorMessage("Error al crear la publicación.");
         setStatus("error");
       }
     }
@@ -80,19 +95,19 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
-    
-    if (formData.code) {
-      const codeError = validateField("code", formData.code);
-      if (codeError) {
-        newErrors.code = codeError;
+
+    if (formData.title) {
+      const titleError = validateField("title", formData.title);
+      if (titleError) {
+        newErrors.title = titleError;
         isValid = false;
       }
     }
 
-    if (formData.name) {
-      const nameError = validateField("name", formData.name);
-      if (nameError) {
-        newErrors.name = nameError;
+    if (formData.author) {
+      const authorError = validateField("author", formData.author);
+      if (authorError) {
+        newErrors.author = authorError;
         isValid = false;
       }
     }
@@ -107,12 +122,12 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
       className="space-y-6 bg-white p-6 rounded-lg"
     >
       <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">
-        Crear Tipo General
+        Crear Publicación
       </h2>
 
       {status === "success" && (
         <p className="text-green-600 bg-green-100 p-2 rounded-lg">
-          Tipo general creado con éxito.
+          Publicación creada con éxito.
         </p>
       )}
       {errorMessage && (
@@ -124,51 +139,51 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Código
+            Autor
           </label>
           <input
             type="text"
-            name="code"
-            value={formData.code}
+            name="author"
+            value={formData.author}
             onChange={handleChange}
             className={`block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${
-              validationErrors.code
+              validationErrors.author
                 ? "border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:ring-blue-500"
             }`}
           />
-          {validationErrors.code && (
-            <p className="mt-1 text-sm text-red-600">{validationErrors.code}</p>
+          {validationErrors.author && (
+            <p className="mt-1 text-sm text-red-600">{validationErrors.author}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Nombre
+            Título
           </label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="title"
+            value={formData.title}
             onChange={handleChange}
             className={`block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${
-              validationErrors.name
+              validationErrors.title
                 ? "border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:ring-blue-500"
             }`}
           />
-          {validationErrors.name && (
-            <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+          {validationErrors.title && (
+            <p className="mt-1 text-sm text-red-600">{validationErrors.title}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Descripción
+            Contenido
           </label>
           <textarea
-            name="description"
-            value={formData.description}
+            name="content"
+            value={formData.content}
             onChange={handleChange}
             className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
           />
@@ -176,35 +191,56 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Tipo
+            Categoría
           </label>
-          <select
-            name="type"
-            value={formData.type}
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
             onChange={handleChange}
             className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
-          >
-            {Object.values(Type).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div>
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="active"
-              checked={formData.active}
-              onChange={(e) =>
-                setFormData({...formData, active: e.target.checked})
-              }
-              className="rounded border-gray-300 text-blue-500 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span className="text-sm font-medium text-gray-700">Activo</span>
+          <label className="block text-sm font-semibold text-gray-700">
+            Fecha de Publicación
           </label>
+          <input
+            type="date"
+            name="publicationDate"
+            value={formData.publicationDate.toISOString().split("T")[0]}
+            onChange={(e) =>
+              setFormData({ ...formData, publicationDate: new Date(e.target.value) })
+            }
+            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700">
+            Portadas (Cover)
+          </label>
+          <input
+            type="file"
+            name="cover"
+            multiple
+            onChange={(e) => handleFileChange(e, "cover")}
+            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700">
+            Archivos (File)
+          </label>
+          <input
+            type="file"
+            name="file"
+            multiple
+            onChange={(e) => handleFileChange(e, "file")}
+            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2"
+          />
         </div>
       </div>
 
@@ -220,7 +256,7 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
         >
-          <Save className="w-4 h-4 inline-block mr-1"/>
+          <Save className="w-4 h-4 inline-block mr-1" />
           Guardar
         </button>
       </div>
@@ -228,4 +264,4 @@ const GeneralTypeCreate = ({onClose}: GeneralTypeCreateProps) => {
   );
 };
 
-export default GeneralTypeCreate;
+export default PublicationCreate;

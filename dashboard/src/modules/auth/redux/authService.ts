@@ -1,48 +1,34 @@
-import {LoginCredentials} from "@/modules/auth/types/auth.ts";
-import axiosInstance from "@/config/axios.ts";
+import {LoginCredentials, LoginResponse} from "@/modules/auth/types/auth";
+import axiosInstance from "@/config/axios";
 
 const authService = {
-  login: async (credentials: LoginCredentials) => {
-    try {
-      const response = await axiosInstance.post('auth/login', credentials);
-
-      if (response.data.accessToken && response.data.refreshToken) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-
-        return {
-          user: response.data.user,
-          accessToken: response.data.accessToken,
-          refreshToken: response.data.refreshToken,
-        }
-      }
-
-      new Error('Dont provide accessToken and refreshToken');
-    } catch {
-      throw new Error('Error to login');
+  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
+    const response = await axiosInstance.post<LoginResponse>('auth/login', credentials);
+    if (response.data.accessToken && response.data.refreshToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
     }
+    return response.data;
   },
 
-  refreshToken: async () => {
+  refreshToken: async (): Promise<string> => {
     const refreshToken = localStorage.getItem('refreshToken');
-
-    try {
-      const response = await axiosInstance.post('auth/refresh', {refreshToken});
-
-      if (response.data.accessToken) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        return response.data.accessToken;
-      }
-    } catch (error) {
-      authService.logout();
-      throw error
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
     }
+    const response = await axiosInstance.post<{ accessToken: string }>('auth/refresh', {refreshToken});
+    if (response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+      return response.data.accessToken;
+    }
+    throw new Error('Failed to refresh token');
   },
-  
+
   logout: () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
   }
-}
+};
 
 export default authService;
+
