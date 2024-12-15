@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Save } from "lucide-react";
-import { GeneralType, Type } from "@/interfaces/GeneralType";
+import React, {useState, useEffect} from "react";
+import {Save} from "lucide-react";
+import {GeneralType, Type} from "@/interfaces/GeneralType";
 import {
   getGeneralTypeById,
   updateGeneralType,
 } from "../services/GeneralType.api";
-import { useQueryClient } from "@tanstack/react-query";
+import {useQueryClient} from "@tanstack/react-query";
 
 interface GeneralTypeEditProps {
   idGeneralType: string;
@@ -17,9 +17,9 @@ interface ValidationErrors {
 }
 
 const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
-  idGeneralType,
-  onClose,
-}) => {
+                                                           idGeneralType,
+                                                           onClose,
+                                                         }) => {
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<GeneralType>({
@@ -65,8 +65,8 @@ const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name]: value}));
 
     const error = validateField(name, value);
     setValidationErrors((prev) => ({
@@ -76,7 +76,7 @@ const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
   };
 
   const handleTypeChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, type: value }));
+    setFormData((prev) => ({...prev, type: value}));
     const error = validateField("type", value);
     setValidationErrors((prev) => ({
       ...prev,
@@ -146,7 +146,7 @@ const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
     try {
       await updateGeneralType(idGeneralType, updateData);
       setStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["general-type"] });
+      queryClient.invalidateQueries({queryKey: ["general-type"]});
       setTimeout(onClose, 100);
     } catch (error) {
       if (error instanceof Error) {
@@ -289,7 +289,7 @@ const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
               name="active"
               checked={formData.active}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, active: e.target.checked }))
+                setFormData((prev) => ({...prev, active: e.target.checked}))
               }
               className="rounded border-gray-300 text-blue-500 focus:border-blue-500 focus:ring-blue-500"
             />
@@ -310,7 +310,7 @@ const GeneralTypeEdit: React.FC<GeneralTypeEditProps> = ({
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
-          <Save className="w-4 h-4 inline-block mr-1" /> Guardar
+          <Save className="w-4 h-4 inline-block mr-1"/> Guardar
         </button>
       </div>
     </form>

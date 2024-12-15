@@ -16,29 +16,44 @@ export const getGalleryById = async (idGallery: string): Promise<Gallery> => {
 };
 
 export const updateGallery = async (
-  idGallery: string,
-  gallery: Partial<Gallery>
+  idGallery: number,
+  formData: FormData
 ): Promise<Gallery> => {
   try {
-    const res = await axiosInstance.patch(`gallery/${idGallery}`, gallery);
+    // Debuggear el contenido del FormData
+    console.log('FormData contents:');
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const res = await axiosInstance.patch(`gallery/${idGallery}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
-  } catch {
-    throw new Error("Error to update the gallery");
+  } catch (error) {
+    // Mejorar el manejo de errores
+    console.error('Error details:', error.response?.data);
+    throw new Error(`Error to update Gallery: ${error.response?.data?.message || error.message}`);
   }
 };
 
-export const createGallery = async (
-  gallery: Omit<Gallery, "idGallery">
-): Promise<Gallery> => {
+
+export const createGallery = async (formData: FormData): Promise<Gallery> => {
   try {
-    const res = await axiosInstance.post("gallery", gallery);
+    const res = await axiosInstance.post("gallery", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   } catch {
     throw new Error("Error to create new gallery");
   }
 };
 
-export const deleteGallery = async (idGallery: string): Promise<Gallery> => {
+export const deleteGallery = async (idGallery: number): Promise<Gallery> => {
   try {
     const res = await axiosInstance.delete(`gallery/${idGallery}`);
     return res.data;

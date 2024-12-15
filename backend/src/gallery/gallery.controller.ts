@@ -26,7 +26,7 @@ export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images', 5))
+  @UseInterceptors(FilesInterceptor('images', 20))
   @Auth(Rol.CREADOR_CONTENIDO, Rol.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   create(
@@ -49,13 +49,14 @@ export class GalleryController {
   @Patch(':id')
   @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(FilesInterceptor('images', 5))
-  update(
+  @UseInterceptors(FilesInterceptor('images', 20))
+  update( 
     @Param('id') id: string,
     @Body() updateGalleryDto: UpdateGalleryDto,
     @UploadedFiles() files: { images?: Express.Multer.File[] },
   ) {
-    return this.galleryService.update(+id, updateGalleryDto, files);
+    const parseDto: UpdateGalleryDto =  JSON.parse(updateGalleryDto as any);
+    return this.galleryService.update(+id, parseDto, files);
   }
 
   @Delete(':id')

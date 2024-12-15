@@ -110,18 +110,29 @@ export class GalleryService {
           'gallery/images',
         );
       }
+      
+      const finalImages = [
+        ...(updateGalleryDto.existingImages || []),
+        ...newImages,
+      ]
+      
+      const imagesToDelete = gallery.images.filter(
+        img => !updateGalleryDto.existingImages?.includes(img)
+      );
+      
+      
 
-      if (gallery.images.length) {
+      if (imagesToDelete.length) {
         await this.servicesService
           .deleteImages(gallery.images)
           .catch((error) => {
             console.error('Error deleting images', error);
           });
       }
-
+      
       const updateData = {
         ...updateGalleryDto,
-        ...(newImages.length && { images: newImages }),
+        images: finalImages,
       };
 
       await this.galleryRepository.update(idGallery, updateData);

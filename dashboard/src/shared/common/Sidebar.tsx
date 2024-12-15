@@ -96,7 +96,8 @@ const AppSidebar = () => {
           </nav>
           {/* Footer */}
           <SidebarFooter>
-            <a onClick={handleLogout} className="flex items-center gap-1 px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"> 
+            <a onClick={handleLogout}
+               className="flex items-center gap-1 px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150">
               <LogOut className="h-4 w-4"/>
               <span className="ml-2 text-sm">Salir</span>
             </a>
