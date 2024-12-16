@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import {
   Users,
   Home,
@@ -8,12 +8,11 @@ import {
   PictureInPicture2,
   LayoutDashboard,
   Images,
-  LogOut
+  LogOut,
 } from "lucide-react";
 import logoWhite from "@/assets/images/logo-white.svg";
-import {SidebarFooter} from "@/shared/components/ui/sidebar.tsx";
-import {useNavigate} from "react-router-dom";
-
+import { SidebarFooter } from "@/shared/components/ui/sidebar.tsx";
+import { useNavigate } from "react-router-dom";
 
 const items = [
   {
@@ -59,9 +58,8 @@ const AppSidebar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-
-    navigate('login')
-  }
+    navigate("login");
+  };
 
   return (
     <div className="relative">
@@ -75,37 +73,45 @@ const AppSidebar = () => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-center p-6">
-
-            <img src={logoWhite} alt="Logo de Chancay360" className="h-12 hidden" />
-
-           
-
+            <img
+              src={logoWhite}
+              alt="Logo de Chancay360"
+              className="h-12 hidden"
+            />
           </div>
 
           {/* Navigation Items */}
           <nav className="flex-1 px-1 pt-10">
-            <ul className="space-y-1">
-              {items.map((item) => (
-                <li key={item.title}>
-                  <a
-                    href={item.url}
-                    className="flex items-center justify-start px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150 w-full"
-                  >
-           <item.icon className="h-4 w-4"/>
-                    {!isCollapsed && (
-                      <span className="flex-1 truncate  ml-2 text-sm">{item.title}</span>
-                    )}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <ul className="space-y-1">
+            {items.map((item) => (
+              <li key={item.title}>
+                <a
+                  href={item.url}
+                  className="flex items-center justify-center w-full px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"
+                >
+                  <div className="flex items-center justify-center h-8 w-8">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  {!isCollapsed && (
+                    <span className="flex-1 truncate ml-3 text-sm">{item.title}</span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+
           {/* Footer */}
           <SidebarFooter>
-            <a onClick={handleLogout}
-               className="flex items-center gap-1 px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150">
-              <LogOut className="h-4 w-4"/>
-              <span className="ml-2 text-sm">Salir</span>
+            <a
+              onClick={handleLogout}
+              className="flex items-center gap-1 px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"
+            >
+              <LogOut className="h-4 w-4" />
+              {!isCollapsed && (
+                <span className="ml-2 text-sm">Salir</span>
+              )}
             </a>
           </SidebarFooter>
         </div>
@@ -118,12 +124,10 @@ const AppSidebar = () => {
           isCollapsed ? "rotate-180" : ""
         }`}
       >
-        <LayoutDashboard/>
+        <LayoutDashboard />
       </a>
     </div>
   );
 };
-
-
 
 export default AppSidebar;
