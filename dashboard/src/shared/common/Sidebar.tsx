@@ -75,11 +75,11 @@ const AppSidebar = () => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-center p-6">
-<<<<<<< HEAD
+
             <img src={logoWhite} alt="Logo de Chancay360" className="h-12 hidden" />
-=======
-            <img src={logoWhite} alt="Logo de Chancay360" className="h-12"/>
->>>>>>> 489a3120b4558f96cb1afe2d9ede2864df1a4401
+
+           
+
           </div>
 
           {/* Navigation Items */}
@@ -91,14 +91,7 @@ const AppSidebar = () => {
                     href={item.url}
                     className="flex items-center justify-start px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150 w-full"
                   >
-<<<<<<< HEAD
-                    {/* Aseguramos que el icono se alinee a la izquierda */}
-                    <item.icon className="h-4 w-4" />
-                    
-                    {/* Mostrar el texto solo si el sidebar no está colapsado */}
-=======
-                    <item.icon className="h-4 w-4"/>
->>>>>>> 489a3120b4558f96cb1afe2d9ede2864df1a4401
+           <item.icon className="h-4 w-4"/>
                     {!isCollapsed && (
                       <span className="flex-1 truncate  ml-2 text-sm">{item.title}</span>
                     )}

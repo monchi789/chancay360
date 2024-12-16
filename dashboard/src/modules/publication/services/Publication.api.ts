@@ -1,62 +1,68 @@
+import axiosInstance from "@/config/axios";
 import { Publication } from "@/interfaces/Publication";
-import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-});
-
+// Obtener todas las publicaciones
 export const getAllPublications = async (): Promise<Publication[]> => {
   const res = await axiosInstance.get("publication");
   return res.data;
 };
 
+// Obtener una publicación por ID
 export const getPublicationById = async (
   idPublication: string
 ): Promise<Publication> => {
   try {
     const res = await axiosInstance.get(`publication/${idPublication}`);
     return res.data;
-  } catch (error) {
-    console.error("Error en getPublicationById:", error);
-    throw new Error("Error al obtener la publicación");
+  } catch {
+    throw new Error("Error al obtener la publicación por ID");
   }
 };
 
+// Actualizar una publicación usando FormData
 export const updatePublication = async (
   idPublication: string,
-  publication: Partial<Publication>
+  formData: FormData
 ): Promise<Publication> => {
   try {
     const res = await axiosInstance.patch(
       `publication/${idPublication}`,
-      publication
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return res.data;
-  } catch (error) {
-    console.error("Error en updatePublication:", error);
+  } catch {
     throw new Error("Error al actualizar la publicación");
   }
 };
 
+// Crear una publicación usando FormData
 export const createPublication = async (
-  publication: Omit<Publication, "idPublication">
+  formData: FormData
 ): Promise<Publication> => {
   try {
-    const res = await axiosInstance.post("publication", publication);
+    const res = await axiosInstance.post("publication", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
-  } catch (error) {
-    console.error("Error al crear la publicación:", error);
+  } catch {
     throw new Error("Error al crear la publicación");
   }
 };
 
+// Eliminar una publicación
 export const deletePublication = async (
   idPublication: string
 ): Promise<void> => {
   try {
     await axiosInstance.delete(`publication/${idPublication}`);
-  } catch (error) {
-    console.error("Error al eliminar la publicación:", error);
+  } catch {
     throw new Error("Error al eliminar la publicación");
   }
 };
