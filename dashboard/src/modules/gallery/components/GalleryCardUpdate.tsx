@@ -4,7 +4,6 @@ import {updateGallery, getGalleryById} from "@/modules/gallery/services/Gallery.
 import {useGallery} from "@/modules/gallery/hooks/useGallery";
 import ImageUploader from "@/shared/common/ImageUpload";
 
-// Asegúrate de tener la URL base en tu archivo .env
 const API_URL = import.meta.env.VITE_URL;
 
 interface GalleryEditProps {
@@ -12,7 +11,7 @@ interface GalleryEditProps {
   onClose: () => void;
 }
 
-const GalleryEdit: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
+const GalleryCardUpdate: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
   const {refetch} = useGallery();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -28,14 +27,13 @@ const GalleryEdit: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
         setDescription(gallery.description || "");
 
         if (gallery.images && gallery.images.length > 0) {
-          // Asegúrate de agregar la URL base a las imágenes existentes
           const imageUrls = gallery.images.map((image) =>
             image.startsWith("http") ? image : `${API_URL}${image}`
           );
           setPreviews(imageUrls);
         }
       } catch {
-        setErrorMessage("Error al cargar los datos de la galería");
+        setErrorMessage("Error to load data gallery");
       } finally {
         setIsLoading(false);
       }
@@ -62,8 +60,7 @@ const GalleryEdit: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
     setPreviews((prev) => {
       const updatedPreviews = [...prev];
       const removedPreview = updatedPreviews[index];
-
-      // Si es una URL blob, la revocamos
+      
       if (removedPreview.startsWith('blob:')) {
         URL.revokeObjectURL(removedPreview);
       }
@@ -80,20 +77,17 @@ const GalleryEdit: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
 
     const formData = new FormData();
 
-    // Agregar nuevas imágenes al FormData
     selectedFiles.forEach((file) => {
       formData.append("images", file);
     });
 
-    // Crear el objeto DTO con la descripción y las imágenes existentes
     const updateDto = {
       description: description.trim(),
       existingImages: previews
         .filter(preview => !preview.startsWith("blob:"))
-        .map(preview => preview.replace(API_URL, "")) // Remover la URL base
+        .map(preview => preview.replace(API_URL, ""))
     };
 
-    // Agregar el DTO como campo 'data' en formato JSON
     formData.append("data", JSON.stringify(updateDto));
 
     try {
@@ -168,4 +162,4 @@ const GalleryEdit: React.FC<GalleryEditProps> = ({idGallery, onClose}) => {
   );
 };
 
-export default GalleryEdit;
+export default GalleryCardUpdate;

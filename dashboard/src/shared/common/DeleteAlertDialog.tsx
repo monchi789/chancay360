@@ -6,6 +6,7 @@ import { buttonVariants } from "@/shared/components/ui/button";
 const AlertDialog = AlertDialogPrimitive.Root;
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
+
 const AlertDialogOverlay = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
@@ -40,9 +41,9 @@ const AlertDialogContent = React.forwardRef<
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
 
 const AlertDialogHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+                             className,
+                             ...props
+                           }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
       "flex flex-col space-y-2 text-center sm:text-left",
@@ -54,9 +55,9 @@ const AlertDialogHeader = ({
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
 const AlertDialogFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+                             className,
+                             ...props
+                           }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
@@ -89,8 +90,7 @@ const AlertDialogDescription = React.forwardRef<
     {...props}
   />
 ));
-AlertDialogDescription.displayName =
-  AlertDialogPrimitive.Description.displayName;
+AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
 const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
@@ -124,16 +124,22 @@ type DeleteAlertDialogProps = {
   title: string;
   description: string;
   onConfirm: () => void;
+  trigger?: React.ReactNode;
 };
 
-export const DeleteAlertDialog = ({
-  title,
-  description,
-  onConfirm,
-}: DeleteAlertDialogProps) => (
+export const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
+                                                                      title,
+                                                                      description,
+                                                                      onConfirm,
+                                                                      trigger,
+                                                                    }) => (
   <AlertDialog>
     <AlertDialogTrigger asChild>
-      <button className="ml-4 text-white bg-yellowOrange-600 hover:bg-yellowOrange-900 py-2 px-4 rounded-md">Eliminar</button>
+      {trigger || (
+        <button className="ml-4 text-white bg-yellowOrange-600 hover:bg-yellowOrange-900 py-2 px-4 rounded-md">
+          Eliminar
+        </button>
+      )}
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -147,3 +153,15 @@ export const DeleteAlertDialog = ({
     </AlertDialogContent>
   </AlertDialog>
 );
+
+export {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+};
