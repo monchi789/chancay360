@@ -1,11 +1,12 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import {IsArray, IsOptional, IsString} from "class-validator";
 
 export class UpdateGalleryDto {
-  @IsOptional()
   @IsString()
-  @MinLength(3)
+  @IsOptional()
   description?: string;
-  
+
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
   existingImages?: string[];
 }

@@ -27,10 +27,10 @@ export const updateGallery = async (
     });
     return res.data;
   } catch {
-    throw new Error('Error to update Gallery')
-    ;
+    throw new Error('Error al actualizar la galería');
   }
-};
+
+}
 
 
 export const createGallery = async (formData: FormData): Promise<Gallery> => {

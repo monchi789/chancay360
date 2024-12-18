@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -14,7 +15,7 @@ import {
 import {GalleryService} from './gallery.service';
 import {CreateGalleryDto} from './dto/create-gallery.dto';
 import {UpdateGalleryDto} from './dto/update-gallery.dto';
-import {FilesInterceptor} from '@nestjs/platform-express';
+import {FileFieldsInterceptor, FilesInterceptor} from '@nestjs/platform-express';
 import {PaginationDto} from '../shared/dto/pagination.dto';
 import {Auth} from "../auth/decorators/auth.decorators";
 import {Rol} from "../shared/enums/rol.enum";
@@ -23,7 +24,8 @@ import {RolesGuard} from "../auth/guard/roles.guard";
 
 @Controller('gallery')
 export class GalleryController {
-  constructor(private readonly galleryService: GalleryService) {}
+  constructor(private readonly galleryService: GalleryService) {
+  }
 
   @Post()
   @UseInterceptors(FilesInterceptor('images', 20))
@@ -49,14 +51,28 @@ export class GalleryController {
   @Patch(':id')
   @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(FilesInterceptor('images', 20))
-  update( 
+  @UseInterceptors(FileFieldsInterceptor([
+    {name: 'images', maxCount: 20}
+  ]))
+  async update(
     @Param('id') id: string,
-    @Body() updateGalleryDto: UpdateGalleryDto,
-    @UploadedFiles() files: { images?: Express.Multer.File[] },
+    @Body() body: { data: string },
+    @UploadedFiles() files: { images?: Express.Multer.File[] }
   ) {
-    const parseDto: UpdateGalleryDto =  JSON.parse(updateGalleryDto as any);
-    return this.galleryService.update(+id, parseDto, files);
+    try {
+      const updateGalleryDto: UpdateGalleryDto = JSON.parse(body.data);
+
+      if (!updateGalleryDto) {
+        throw new BadRequestException('Invalid gallery data');
+      }
+
+      return await this.galleryService.update(+id, updateGalleryDto, files);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new BadRequestException('Invalid JSON format in gallery data');
+      }
+      throw error;
+    }
   }
 
   @Delete(':id')
