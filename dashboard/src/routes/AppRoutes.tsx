@@ -11,7 +11,7 @@ const GeneralType = lazy(
 const Gallery = lazy(() => import("@/modules/gallery/pages/GalleryMain"));
 const Client = lazy(() => import("@/modules/client/pages/ClientMain"));
 const Login = lazy(() => import("@/modules/auth/pages/Login"));
-
+const Publication = lazy(() => import("@/modules/publication/pages/PublicationMain"));
 const AppRoutes = () => {
   return (
     <Suspense
@@ -33,6 +33,7 @@ const AppRoutes = () => {
           <Route path="/tipo-general" element={<GeneralType/>}/>
           <Route path="/cliente" element={<Client/>}/>
           <Route path="/galeria" element={<Gallery/>}/>
+          <Route path="/publicacion" element={<Publication/>}/>
         </Route>
       </Routes>
     </Suspense>
