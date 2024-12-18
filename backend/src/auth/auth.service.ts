@@ -36,7 +36,6 @@ export class AuthService {
       lastName,
     });
 
-    // Verify that hash is saved correctly
     const savedUser = await this.userService.findByEmailWithPassword(email);
     if (savedUser?.password !== hashedPassword) {
       console.error('Password its not equal');

@@ -117,12 +117,10 @@ export class GalleryService {
         );
       }
 
-      // 2. Identificar imágenes a eliminar (solo las que ya no están en existingImages)
       const imagesToDelete = gallery.images.filter(
         img => !existingImages.includes(img) && !existingImages.includes(`/${img}`)
       );
 
-      // 3. Eliminar imágenes no deseadas
       if (imagesToDelete.length > 0) {
         await Promise.all(
           imagesToDelete.map(async (img) => {
@@ -135,13 +133,11 @@ export class GalleryService {
         );
       }
 
-      // 4. Combinar imágenes existentes y nuevas
       const finalImages = [
         ...existingImages,
         ...newImages
       ];
 
-      // 5. Actualizar la galería
       await this.galleryRepository.update(
         {idGallery},
         {
@@ -150,12 +146,10 @@ export class GalleryService {
         }
       );
 
-      // 6. Retornar la galería actualizada
       return await this.galleryRepository.findOne({
         where: {idGallery},
       });
     } catch (error) {
-      // Si algo falla, eliminar las nuevas imágenes
       if (newImages.length > 0) {
         await Promise.all(
           newImages.map(img =>
