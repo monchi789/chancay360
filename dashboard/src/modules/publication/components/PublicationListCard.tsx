@@ -87,7 +87,7 @@ const PublicationListCard = () => {
                 <p className="text-gray-800 text-sm">{publication.title}</p>
               </div>
               <div className="mb-2">
-                <p className="text-sm font-semibold text-gray-600">Descripción:</p>
+                <p className="text-sm font-semibold text-gray-600">:</p>
                 <p className="text-gray-800 text-sm">
                   {publication.content
                     ? publication.content.length > 40

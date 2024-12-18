@@ -2,25 +2,26 @@ import React, { useState } from "react";
 import { Save } from "lucide-react";
 import { createPublication } from "../services/Publication.api";
 import { usePublications } from "@/modules/publication/hooks/usePublicationTypes";
-import ImageUploader from "@/shared/common/ImageUpload.tsx";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Estilos para React Quill
+import ImageUploader from "@/shared/common/ImageUpload"; // Importa tu componente
 
-interface GalleryCreateProps {
+interface PublicationCreateProps {
   onClose: () => void;
 }
 
-const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
+const PublicationCardCreate: React.FC<PublicationCreateProps> = ({ onClose }) => {
   const { refetch } = usePublications();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [content, setContent] = useState<string>(""); // Estado para React Quill
   const [category, setCategory] = useState<string>("");
-  const [publicationDate, setPublicationDate] = useState<Date>(new Date());
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Manejo de imágenes
+  // Manejo de imágenes: agregar imágenes nuevas
   const handleDrop = (files: File[]) => {
     const newFiles = [...selectedFiles, ...files];
     setSelectedFiles(newFiles);
@@ -29,6 +30,7 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
+  // Eliminar una imagen específica
   const removeImage = (index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -36,42 +38,36 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
 
   // Submit del formulario
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevenir comportamiento por defecto
+    e.preventDefault();
     setStatus("loading");
     setErrorMessage(null);
-  
-    // Validar que description tenga al menos 3 caracteres
-    if (!description || description.trim().length < 3) {
-      setErrorMessage("La descripción debe tener al menos 3 caracteres.");
+
+    // Validar que el contenido tenga al menos 3 caracteres
+    if (!content || content.trim().length < 3) {
+      setErrorMessage("El contenido debe tener al menos 3 caracteres.");
       setStatus("error");
       return;
     }
-  
+
     try {
-      // Crear el FormData
       const formData = new FormData();
       formData.append("title", title);
       formData.append("author", author);
       formData.append("category", category);
-      formData.append("content", description); // Asignar description a content
-  
-      selectedFiles.forEach((file) => {
-        formData.append("cover", file);
-      });
-  
-      // Llamar a la API
+      formData.append("content", content); // Enviar el contenido del editor
+
+      selectedFiles.forEach((file) => formData.append("cover", file));
+
       await createPublication(formData);
-  
       setStatus("success");
-      await refetch(); // Refrescar la lista de publicaciones
-      onClose(); // Cerrar el modal
+      await refetch();
+      onClose();
     } catch (error) {
       console.error("Error al crear la publicación:", error);
       setErrorMessage("Error al crear la publicación.");
       setStatus("error");
     }
   };
-  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg">
@@ -100,7 +96,7 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            className="block w-full mt-2 p-2 border rounded-lg"
             required
           />
         </div>
@@ -112,7 +108,7 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
           <input
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            className="block w-full mt-2 p-2 border rounded-lg"
             required
           />
         </div>
@@ -124,21 +120,22 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
           <input
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            className="block w-full mt-2 p-2 border rounded-lg"
             required
           />
         </div>
 
+        {/* Editor de contenido con React Quill */}
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Fecha de Publicación <span className="text-red-500">*</span>
+            Contenido <span className="text-red-500">*</span>
           </label>
-          <input
-            type="date"
-            value={publicationDate.toISOString().substring(0, 10)}
-            onChange={(e) => setPublicationDate(new Date(e.target.value))}
-            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            required
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={setContent}
+            className="mt-2"
+            placeholder="Escribe el contenido aquí..."
           />
         </div>
 
@@ -151,20 +148,7 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
             previews={previews}
             onDrop={handleDrop}
             removeImage={removeImage}
-            validationError={selectedFiles.length === 0 ? errorMessage : undefined}
-          />
-        </div>
-
-        {/* Descripción */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700">
-            Descripción (opcional)
-          </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="block w-full mt-2 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
-            rows={3}
+            validationError={selectedFiles.length === 0 ? "Debes subir al menos una imagen." : null}
           />
         </div>
       </div>
@@ -174,7 +158,7 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
         <button
           type="button"
           onClick={onClose}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
         >
           Cancelar
         </button>
@@ -190,4 +174,4 @@ const GalleryCardCreate: React.FC<GalleryCreateProps> = ({ onClose }) => {
   );
 };
 
-export default GalleryCardCreate;
+export default PublicationCardCreate;
