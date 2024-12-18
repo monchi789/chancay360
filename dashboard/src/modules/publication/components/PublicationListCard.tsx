@@ -1,10 +1,11 @@
-import { CardContent } from "@/shared/components/ui/card.tsx";
-import { Carousel, CarouselContent, CarouselItem } from "@/shared/components/ui/carousel.tsx";
 import { usePublications } from "@/modules/publication/hooks/usePublicationTypes";
 import { PacmanLoader } from "react-spinners";
 import { useState } from "react";
 import { deletePublication } from "@/modules/publication/services/Publication.api";
 import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
+import { Pencil, Trash2 } from "lucide-react";
+import PublicationCardUpdate from "@/modules/publication/components/PublicationCardUpdate";
+
 const PublicationListCard = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedPublicationId, setSelectedPublicationId] = useState<string | null>(null);
@@ -56,59 +57,81 @@ const PublicationListCard = () => {
   }
 
   return (
-    <>
-      <div className="flex flex-wrap justify-center mt-2 gap-x-2">
-        {publicationList.map((publication) => (
-          <div key={publication.idPublication} className="max-w-80 bg-gray-100 rounded-md items-center justify-center">
-            {/* Carrusel de imágenes */}
-            <Carousel className="w-full">
-              <CarouselContent>
-                {publication.cover?.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <CardContent className="flex aspect-square items-center justify-center p-2">
-                      <img
-                        src={`${apiUrl}${image}`}
-                        alt={`Publication Image ${index + 1}`}
-                        className="w-full h-full object-cover rounded-lg"
-                        onError={(e) => {
-                          e.currentTarget.src = "path/to/placeholder-image.jpg";
-                        }}
-                      />
-                    </CardContent>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-
-            {/* Información de la publicación */}
-            <div className="mt-2 m-2 bg-white p-2 rounded-lg max-h-36">
-              <div className="mb-2">
-                <p className="text-sm font-semibold text-gray-600">Título:</p>
-                <p className="text-gray-800 text-sm">{publication.title}</p>
-              </div>
-              <div className="mb-2">
-                <p className="text-sm font-semibold text-gray-600">:</p>
-                <p className="text-gray-800 text-sm">
-                  {publication.content
-                    ? publication.content.length > 40
-                      ? `${publication.content.slice(0, 40)}...`
-                      : publication.content
-                    : "No hay descripción disponible"}
-                </p>
-              </div>
-
-            </div>
-
-            {/* Modal de actualización */}
-            {showModal && selectedPublicationId === publication.idPublication && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-        
-              </div>
+    <div className="flex flex-wrap justify-center gap-6 mt-6">
+      {publicationList.map((publication) => (
+        <div
+          key={publication.idPublication}
+          className="flex flex-col bg-white rounded-lg shadow-md overflow-hidden max-w-xs w-[300px] h-[350px]"
+        >
+          {/* Imagen */}
+          <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+            {publication.cover?.[0] ? (
+              <img
+                src={`${apiUrl}${publication.cover?.[0]}`}
+                alt="Imagen Cover"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-gray-500 font-medium">Imagen Cover</span>
             )}
           </div>
-        ))}
-      </div>
-    </>
+
+          {/* Contenido */}
+          <div className="flex flex-col justify-between flex-grow p-4">
+          <div>
+             {/* Aquí pondremos el tiempo/hora de publicacion */}
+  <p className="text-xs text-gray-400 mb-1">Fecha Publicacion</p>
+  <h3 className="text-md font-semibold text-gray-800 leading-tight">
+    {publication.title || "Sin título"}
+  </h3>
+  {/* Renderizamos el contenido HTML */}
+  <div
+    className="text-sm text-gray-600 mt-2 line-clamp-3"
+    dangerouslySetInnerHTML={{ __html: publication.content || "No hay descripción disponible" }}
+  ></div>
+</div>
+
+
+            {/* Footer */}
+            <div className="flex items-center justify-between text-gray-400 text-xs mt-4">
+              <span className="font-semibold text-gray-600">Autor</span>
+              <div className="flex gap-4">
+                {/* Botón Editar */}
+                <button
+                  onClick={() => openModal(publication.idPublication!)}
+                  className="hover:text-blue-500 transition"
+                >
+                  <Pencil size={16} />
+                </button>
+                {/* Botón Eliminar */}
+                <DeleteAlertDialog
+                  title="Confirmar Eliminación"
+                  description="¿Estás seguro de que quieres eliminar esta publicación?"
+                  onConfirm={() => handleDelete(publication.idPublication!)}
+                  trigger={
+                    <button className="hover:text-red-500 transition">
+                      <Trash2 size={16} />
+                    </button>
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Modal de Actualización */}
+          {showModal && selectedPublicationId === publication.idPublication && (
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+                <PublicationCardUpdate
+                  idPublication={selectedPublicationId!}
+                  onClose={closeModal}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 

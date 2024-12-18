@@ -5,6 +5,8 @@ import { usePublications } from "@/modules/publication/hooks/usePublicationTypes
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Estilos para React Quill
 import ImageUploader from "@/shared/common/ImageUpload"; // Importa tu componente
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+
 
 interface PublicationCreateProps {
   onClose: () => void;
@@ -20,7 +22,7 @@ const PublicationCardCreate: React.FC<PublicationCreateProps> = ({ onClose }) =>
   const [category, setCategory] = useState<string>("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const categories = ["Noticias", "Artículos", "Tutoriales", "Eventos"];
   // Manejo de imágenes: agregar imágenes nuevas
   const handleDrop = (files: File[]) => {
     const newFiles = [...selectedFiles, ...files];
@@ -114,16 +116,23 @@ const PublicationCardCreate: React.FC<PublicationCreateProps> = ({ onClose }) =>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700">
-            Categoría <span className="text-red-500">*</span>
-          </label>
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="block w-full mt-2 p-2 border rounded-lg"
-            required
-          />
-        </div>
+  <label className="block text-sm font-semibold text-gray-700">
+    Categoría <span className="text-red-500">*</span>
+  </label>
+  <Select onValueChange={(value) => setCategory(value)}>
+    <SelectTrigger className="w-full mt-2 p-2 border rounded-lg">
+      <SelectValue placeholder="Selecciona una categoría" />
+    </SelectTrigger>
+    <SelectContent>
+      {categories.map((categoryOption) => (
+        <SelectItem key={categoryOption} value={categoryOption}>
+          {categoryOption}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+
 
         {/* Editor de contenido con React Quill */}
         <div>
