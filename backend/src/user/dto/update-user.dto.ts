@@ -18,19 +18,27 @@ export class UpdateUserDto {
   @MinLength(2)
   @IsOptional()
   @Transform(({ value }) => value.trim())
-  lastName: string;
+  lastName?: string;
 
   @IsString()
   @IsOptional()
   @MinLength(6)
   @Transform(({ value }) => value.trim())
-  password: string;
+  password?: string;
 
   @IsString()
   @IsEmail()
   @MinLength(6)
   @IsOptional()
-  email: string;
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  googleId?: string;
+  
+  @IsString()
+  @IsOptional()
+  avatar?: string;
 
   @IsString()
   @MinLength(4)
