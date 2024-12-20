@@ -33,7 +33,7 @@ const items = [
   },
   {
     title: "Publicaciones",
-    url: "#",
+    url: "/publicacion",
     icon: StickyNote,
   },
   {
