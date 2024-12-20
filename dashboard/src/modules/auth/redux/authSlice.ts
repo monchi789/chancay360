@@ -37,7 +37,7 @@ export const logout = createAsyncThunk(
 );
 
 export const refreshToken = createAsyncThunk<string, void, { rejectValue: string }>(
-  'auth/refreshToken',
+  'auth/refresh-token',
   async (_, thunkAPI) => {
     try {
       return await authService.refreshToken();
@@ -49,7 +49,7 @@ export const refreshToken = createAsyncThunk<string, void, { rejectValue: string
 );
 
 export const handleGoogleRedirect = createAsyncThunk(
-  'auth/handleGoogleRedirect',
+  'auth/handle-google-redirect',
   async (tokens: GoogleRedirectResponse, thunkAPI) => {
     try {
       localStorage.setItem('accessToken', tokens.accessToken);
