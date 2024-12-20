@@ -44,7 +44,7 @@ export class UserController {
   @Auth(Rol.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

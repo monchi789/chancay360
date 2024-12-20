@@ -1,5 +1,5 @@
-import {AuthState, LoginCredentials, LoginResponse} from "@/modules/auth/types/auth";
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState, GoogleRedirectResponse, LoginCredentials, LoginResponse } from "@/modules/auth/types/auth";
 import authService from "@/modules/auth/redux/authService";
 
 const initialState: AuthState = {
@@ -48,6 +48,24 @@ export const refreshToken = createAsyncThunk<string, void, { rejectValue: string
   }
 );
 
+export const handleGoogleRedirect = createAsyncThunk(
+  'auth/handleGoogleRedirect',
+  async (tokens: GoogleRedirectResponse, thunkAPI) => {
+    try {
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      return {
+        user: tokens.user,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Google login failed';
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -75,7 +93,7 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload || 'Login failed';
+        state.message = action.payload as string || 'Usuario o contraseña incorrectos';
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
@@ -94,10 +112,25 @@ const authSlice = createSlice({
         state.refreshToken = null;
         state.isError = true;
         state.message = action.payload || 'Token refresh failed';
+      })
+      .addCase(handleGoogleRedirect.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(handleGoogleRedirect.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
+      })
+      .addCase(handleGoogleRedirect.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
       });
   }
 });
 
-export const {reset} = authSlice.actions;
+export const { reset } = authSlice.actions;
 export default authSlice.reducer;
 
