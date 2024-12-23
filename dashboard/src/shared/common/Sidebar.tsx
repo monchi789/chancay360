@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   Home,
@@ -8,109 +8,111 @@ import {
   PictureInPicture2,
   LayoutDashboard,
   Images,
-  LogOut,
+  LogOut
 } from "lucide-react";
 import logoWhite from "@/assets/images/logo-white.svg";
 import { SidebarFooter } from "@/shared/components/ui/sidebar.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Importar Link
 
 const items = [
-  {
-    title: "Inicio",
-    url: "/",
-    icon: Home,
-  },
-  {
-    title: "Usuarios",
-    url: "#",
-    icon: Users,
-  },
-  {
-    title: "Clientes",
-    url: "/cliente",
-    icon: BookUser,
-  },
-  {
-    title: "Publicaciones",
-    url: "/publicacion",
-    icon: StickyNote,
-  },
-  {
-    title: "Pop Up",
-    url: "#",
-    icon: PictureInPicture2,
-  },
-  {
-    title: "Galeria",
-    url: "/galeria",
-    icon: Images,
-  },
-  {
-    title: "Tipo General",
-    url: "/tipo-general",
-    icon: Library,
-  },
+  { title: "Inicio", url: "/", icon: Home },
+  { title: "Usuarios", url: "#", icon: Users },
+  { title: "Clientes", url: "/cliente", icon: BookUser },
+  { title: "Publicaciones", url: "/publicacion", icon: StickyNote },
+  { title: "Pop Up", url: "/popup", icon: PictureInPicture2 },
+  { title: "Galeria", url: "/galeria", icon: Images },
+  { title: "Tipo General", url: "/tipo-general", icon: Library },
 ];
 
 const AppSidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(
+    () => localStorage.getItem("sidebar-collapsed") === "true" // Lee el valor desde localStorage
+  );
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const navigate = useNavigate();
+  const easing = "ease-[cubic-bezier(.4,0,.2,1)]";
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("login");
   };
 
+  const toggleCollapse = () => {
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    localStorage.setItem("sidebar-collapsed", newCollapsedState.toString()); // Guarda el estado en localStorage
+  };
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 640); // Detecta pantallas menores a 640px
+    };
+
+    updateScreenSize(); // Tamaño inicial
+    window.addEventListener("resize", updateScreenSize);
+
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
+  useEffect(() => {
+    if (isSmallScreen) {
+      setIsCollapsed(true); // Colapsar automáticamente en pantallas pequeñas
+    }
+  }, [isSmallScreen]);
+
   return (
     <div className="relative">
       <div
-        className={`h-screen bg-ceruleanBlue-700 transition-all duration-500 ease-in-out overflow-hidden ${
-          isCollapsed
-            ? "w-20 opacity-80 shadow-none"
-            : "w-40 opacity-100 shadow-lg"
+        className={`h-screen bg-ceruleanBlue-700 shadow-lg transition-[width,opacity] duration-500 ${easing} ${
+          isCollapsed ? "w-16 opacity-90" : "w-64 opacity-100"
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-center p-6">
+          <div className="flex items-center justify-center p-4 sm:p-6 border-ceruleanBlue-500">
             <img
               src={logoWhite}
               alt="Logo de Chancay360"
-              className="h-12 hidden"
+              className={`h-2 sm:h-12 ${isCollapsed ? "hidden" : "block"}`}
             />
           </div>
 
           {/* Navigation Items */}
-          <nav className="flex-1 px-1 pt-10">
-          <ul className="space-y-1">
-            {items.map((item) => (
-              <li key={item.title}>
-                <a
-                  href={item.url}
-                  className="flex items-center justify-center w-full px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"
-                >
-                  <div className="flex items-center justify-center h-8 w-8">
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  {!isCollapsed && (
-                    <span className="flex-1 truncate ml-3 text-sm">{item.title}</span>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
+          <nav className="flex-1 mt-4">
+            <ul className="space-y-2">
+              {items.map((item) => (
+                <li key={item.title}>
+                  <Link
+                    to={item.url} // Usar Link en lugar de <a href>
+                    className={`flex items-center px-3 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-lg transition-all duration-200 ${easing} ${
+                      isCollapsed ? "justify-center" : "justify-start"
+                    }`}
+                  >
+                    <item.icon className="h-7 w-7" />
+                    {!isCollapsed && (
+                      <span className="ml-3 text-base truncate font-medium transition-opacity duration-300">
+                        {item.title}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* Footer */}
-          <SidebarFooter>
+          <SidebarFooter className="mt-auto mb-4">
             <a
               onClick={handleLogout}
-              className="flex items-center gap-1 px-4 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-md transition-colors duration-150"
+              className={`flex items-center px-3 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-lg transition-all duration-200 cursor-pointer ${
+                isCollapsed ? "justify-center" : "justify-start"
+              }`}
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-5 w-5" />
               {!isCollapsed && (
-                <span className="ml-2 text-sm">Salir</span>
+                <span className="ml-3 text-l font-medium transition-opacity duration-300">
+                  Salir
+                </span>
               )}
             </a>
           </SidebarFooter>
@@ -118,14 +120,14 @@ const AppSidebar = () => {
       </div>
 
       {/* Collapse Button */}
-      <a
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`absolute top-10 -right-4 transform bg-mediumPurple-700 text-white rounded-lg p-1 hover:bg-mediumPurple-800 transition-transform duration-500 shadow-lg ${
-          isCollapsed ? "rotate-180" : ""
+      <button
+        onClick={toggleCollapse}
+        className={`absolute top-5 -right-5 bg-mediumPurple-700 text-white rounded-full p-2 shadow-lg hover:bg-mediumPurple-800 transition-transform duration-300 ${easing} ${
+          isCollapsed ? "rotate-180" : "rotate-0"
         }`}
       >
-        <LayoutDashboard />
-      </a>
+        <LayoutDashboard className="h-7 w-7" />
+      </button>
     </div>
   );
 };
