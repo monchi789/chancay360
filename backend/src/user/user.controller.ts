@@ -37,7 +37,7 @@ export class UserController {
   @Auth(Rol.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')
@@ -51,6 +51,6 @@ export class UserController {
   @Auth(Rol.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    return this.userService.remove(id);
   }
 }

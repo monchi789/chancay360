@@ -5,7 +5,6 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {User} from './entities/user.entity';
 import {Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import {Rol} from '../shared/enums/rol.enum';
 
 @Injectable()
 export class UserService {
@@ -15,9 +14,9 @@ export class UserService {
   ) {
   }
 
-  async create({user, name, lastName, password, email, avatar}: CreateUserDto) {
+  async create({user, name, lastName, password, email, avatar, googleId}: CreateUserDto) {
     let hashedPassword = null;
-
+    
     const salt = parseInt(process.env.SALT);
     if (password) {
       const isHashed = password?.startsWith('$2b$');
@@ -34,6 +33,7 @@ export class UserService {
         password: hashedPassword,
         email,
         avatar: processedAvatar,
+        googleId
       });
 
       return await this.userRepository.save(userCreate);
@@ -96,15 +96,31 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(idUser: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {idUser}, select: [
+          'idUser', 'user', 'email', 'rol', 'avatar', 'lastName', 'name',
+        ]
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${idUser} not found`);
+      }
+
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new BadRequestException(`User with ID ${idUser} not found`);
+      }
+    }
   }
 
   async update(idUser: string, updateUserDto: UpdateUserDto) {
     try {
-      const user = this.userRepository.update(idUser, updateUserDto)
+      const user = await this.userRepository.update(idUser, updateUserDto)
 
-      if ((await user).affected === 0) {
+      if (user.affected === 0) {
         new BadRequestException(`User with ID ${idUser} not found`);
       }
 
@@ -114,7 +130,13 @@ export class UserService {
     }
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(idUser: string) {
+    const user = await this.userRepository.delete(idUser);
+
+    if (user.affected === 0) {
+      throw new BadRequestException(`User with ID ${idUser} not found`);
+    }
+
+    return { message: `User with ID ${idUser} deleted correctly` };
   }
 }
