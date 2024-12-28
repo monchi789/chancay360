@@ -6,13 +6,13 @@ import { ProfileImage } from "./components/Avatar";
 const MainLayout = () => {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex h-screen w-full">
         <AppSidebar />
-        <div className="flex-1 flex flex-col min-h-screen">
-          <main className="flex-1 p-4 overflow-auto con">
-            <div className="flex justify-end p-2">
-              <ProfileImage />
-            </div>
+        <div className="flex-1 flex flex-col h-screen">
+          <div className="flex justify-end p-4  border-gray-200">
+            <ProfileImage />
+          </div>
+          <main className="flex-1 p-4 overflow-y-auto">
             <Outlet />
           </main>
         </div>
