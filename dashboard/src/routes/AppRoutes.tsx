@@ -1,7 +1,7 @@
 import MainLayout from "@/shared/layouts/MainLayout";
-import {lazy, Suspense} from "react";
-import {Routes, Route} from "react-router-dom";
-import {PacmanLoader} from "react-spinners";
+import {lazy, Suspense } from "react";
+import {Routes, Route } from "react-router-dom";
+import {PacmanLoader } from "react-spinners";
 import ProtectedRoutes from "@/routes/ProtectedRoutes.tsx";
 
 const Home = lazy(() => import("@/modules/home/pages/HomeMain"));
@@ -28,6 +28,7 @@ const AppRoutes = () => {
     >
       <Routes>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/auth/callback' element={<Login/>}/>
 
         <Route element={
           <ProtectedRoutes>
@@ -45,8 +46,8 @@ const AppRoutes = () => {
         </Route>
       </Routes>
     </Suspense>
-  )
-    ;
+  );
 };
 
 export default AppRoutes;
+
