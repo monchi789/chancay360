@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {InjectRepository} from '@nestjs/typeorm';
@@ -15,31 +15,33 @@ export class UserService {
   ) {
   }
 
-  async create({user, name, lastName, password, rol, email}: CreateUserDto) {
+  async create({user, name, lastName, password, email, avatar}: CreateUserDto) {
+    let hashedPassword = null;
+
     const salt = parseInt(process.env.SALT);
-    const isHashed = password.startsWith('$2b$');
-    const hashedPassword = isHashed
-      ? password
-      : await bcrypt.hash(password, salt);
+    if (password) {
+      const isHashed = password?.startsWith('$2b$');
+      hashedPassword = isHashed ? password : await bcrypt.hash(password, salt);
+    }
 
     try {
-      if (!Object.values(Rol).includes(rol as Rol)) {
-        new Error(`The rol "${rol}" is not valid.`);
-      }
+      const processedAvatar = avatar || '/uploads/default/avatar.webp';
 
       const userCreate = this.userRepository.create({
         user,
         name,
         lastName,
         password: hashedPassword,
-        rol,
         email,
+        avatar: processedAvatar,
       });
-      return this.userRepository.save(userCreate);
+
+      return await this.userRepository.save(userCreate);
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error('Error to create a new User.');
+        throw new Error(`Error creating a new user: ${error.message}`);
       }
+      throw new Error('An unexpected error occurred while creating the user.');
     }
   }
 
@@ -98,8 +100,18 @@ export class UserService {
     return `This action returns a #${id} user`;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(idUser: string, updateUserDto: UpdateUserDto) {
+    try {
+      const user = this.userRepository.update(idUser, updateUserDto)
+
+      if ((await user).affected === 0) {
+        new BadRequestException(`User with ID ${idUser} not found`);
+      }
+
+      return this.userRepository.findOne({where: {idUser}});
+    } catch {
+      new BadRequestException(`User with ID ${idUser} not found`);
+    }
   }
 
   async remove(id: number) {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import {
   Users,
   Home,
@@ -13,6 +14,7 @@ import {
 import logoWhite from "@/assets/images/logo-white.svg";
 import { SidebarFooter } from "@/shared/components/ui/sidebar.tsx";
 import { useNavigate, Link } from "react-router-dom"; // Importar Link
+
 
 const items = [
   { title: "Inicio", url: "/", icon: Home },
@@ -34,8 +36,9 @@ const AppSidebar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("login");
-  };
+
+    navigate('login')
+  }
 
   const toggleCollapse = () => {
     const newCollapsedState = !isCollapsed;
@@ -63,6 +66,7 @@ const AppSidebar = () => {
   return (
     <div className="relative">
       <div
+
         className={`h-screen bg-ceruleanBlue-700 shadow-lg transition-[width,opacity] duration-500 ${easing} ${
           isCollapsed ? "w-16 opacity-90" : "w-64 opacity-100"
         }`}
@@ -95,6 +99,7 @@ const AppSidebar = () => {
                       </span>
                     )}
                   </Link>
+
                 </li>
               ))}
             </ul>
@@ -114,6 +119,7 @@ const AppSidebar = () => {
                   Salir
                 </span>
               )}
+
             </a>
           </SidebarFooter>
         </div>
@@ -128,6 +134,7 @@ const AppSidebar = () => {
       >
         <LayoutDashboard className="h-7 w-7" />
       </button>
+
     </div>
   );
 };

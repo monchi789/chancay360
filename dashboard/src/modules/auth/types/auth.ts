@@ -1,7 +1,8 @@
+// types/auth.ts
 export interface User {
   id: string;
-  username: string;
   email: string;
+  username?: string;
 }
 
 export interface AuthState {
@@ -20,6 +21,19 @@ export interface LoginCredentials {
 }
 
 export interface LoginResponse {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface GoogleRedirectParams {
+  accessToken: string | null;
+  refreshToken: string | null;
+  email: string | null;
+  id: string | null;
+}
+
+export interface GoogleRedirectResponse {
   user: User;
   accessToken: string;
   refreshToken: string;

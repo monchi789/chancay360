@@ -10,8 +10,9 @@ import { Transform } from 'class-transformer';
 export class CreateUserDto {
   @IsString()
   @MinLength(3)
-  @Transform(({ value }) => value.trim())
-  user: string;
+  @IsOptional()
+  @Transform(({ value }) => value?.trim())
+  user?: string;
 
   @IsString()
   @MinLength(2)
@@ -21,14 +22,14 @@ export class CreateUserDto {
   @IsString()
   @MinLength(2)
   @IsOptional()
-  @Transform(({ value }) => value.trim())
-  lastName: string;
+  @Transform(({ value }) => value?.trim())
+  lastName?: string;
 
   @IsString()
-  @Transform(({ value }) => value.trim())
-  @IsNotEmpty()
+  @Transform(({ value }) => value?.trim())
+  @IsOptional()
   @MinLength(6)
-  password: string;
+  password?: string;
 
   @IsString()
   @IsEmail()
@@ -37,5 +38,14 @@ export class CreateUserDto {
 
   @IsString()
   @MinLength(4)
+  @IsOptional()
   rol?: string;
+
+  @IsString()
+  @IsOptional()
+  googleId?: string;
+
+  @IsString()
+  @IsOptional()
+  avatar?: string;
 }

@@ -8,7 +8,7 @@ interface PDFUploaderProps {
   existingPreviews?: string[]; 
   onDrop: (files: File[]) => void; 
   removeFile: (index: number) => void; 
-  removeExistingFile?: (index: number) => void; 
+  removeExistingFile?: (index: number) => void;
   validationError?: string | null; 
 }
 
