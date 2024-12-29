@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength, IsArray } from 'class-validator';
 
 export class UpdatePublicationDto {
   @IsOptional()
@@ -6,9 +6,9 @@ export class UpdatePublicationDto {
   @MinLength(3)
   title: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(3)
-  @IsOptional()
   author: string;
 
   @IsOptional()
@@ -20,4 +20,14 @@ export class UpdatePublicationDto {
   @IsString()
   @MinLength(3)
   category: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true }) 
+  existingCover?: string[]; 
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  existingFile?: string[]; 
 }
