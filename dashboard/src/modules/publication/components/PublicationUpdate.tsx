@@ -1,12 +1,13 @@
+import Title from "@/shared/common/Title";
 import React, { useState, useEffect } from "react";
-import { Save, X } from "lucide-react"; // Íconos
+import { Save } from "lucide-react"; // Íconos
 import { useToast } from "@/shared/common/Toast";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ImageUploader from "@/shared/common/ImageUpload";
 import PDFUploader from "@/shared/common/PdfUpload";
-import Title from "@/shared/common/Title";
+
 import {
   Select,
   SelectContent,
