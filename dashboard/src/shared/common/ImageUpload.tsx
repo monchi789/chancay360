@@ -1,7 +1,8 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { Image } from "lucide-react";
 import { CircleX } from "lucide-react";
+import { Image } from "lucide-react";
+
 
 interface ImageUploaderProps {
   previews: string[]; 
@@ -10,6 +11,7 @@ interface ImageUploaderProps {
   removeImage: (index: number) => void; 
   removeExistingImage?: (index: number) => void; 
   validationError?: string | null; 
+  
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
