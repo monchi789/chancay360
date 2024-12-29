@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-
 const PublicationCreate: React.FC = () => {
   const { refetch } = usePublications();
   const { showToast } = useToast(); // Obtén la función para mostrar toasts
