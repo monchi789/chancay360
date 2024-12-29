@@ -4,12 +4,12 @@ import { Image } from "lucide-react";
 import { CircleX } from "lucide-react";
 
 interface ImageUploaderProps {
-  previews: string[]; // Nuevas imágenes subidas (en base64 o URLs locales)
-  existingPreviews?: string[]; // Imágenes existentes que ya están guardadas
-  onDrop: (files: File[]) => void; // Callback para manejar nuevas imágenes
-  removeImage: (index: number) => void; // Callback para eliminar nuevas imágenes
-  removeExistingImage?: (index: number) => void; // Callback para eliminar imágenes existentes (opcional)
-  validationError?: string | null; // Errores de validación
+  previews: string[]; 
+  existingPreviews?: string[];
+  onDrop: (files: File[]) => void; 
+  removeImage: (index: number) => void; 
+  removeExistingImage?: (index: number) => void; 
+  validationError?: string | null; 
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
