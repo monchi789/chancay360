@@ -12,9 +12,9 @@ const Gallery = lazy(() => import("@/modules/gallery/pages/GalleryMain"));
 const Client = lazy(() => import("@/modules/client/pages/ClientMain"));
 const Login = lazy(() => import("@/modules/auth/pages/Login"));
 const Publication = lazy(() => import("@/modules/publication/pages/PublicationMain"));
-//Pagina Crear Publicacion
-const PublicationCrear = lazy(() => import("@/modules/publication/components/PublicationCreate"));
 
+const PublicationCrear = lazy(() => import("@/modules/publication/components/PublicationCreate"));
+const PublicationEditar = lazy(() => import("@/modules/publication/components/PublicationUpdate"));
 const PopUp = lazy(() => import("@/modules/PopUp/pages/PopUpMain"));
 
 const AppRoutes = () => {
@@ -40,6 +40,7 @@ const AppRoutes = () => {
           <Route path="/galeria" element={<Gallery/>}/>
           <Route path="/publicacion" element={<Publication/>}/>
           <Route path="/publicacion/crear" element={<PublicationCrear/>}/>
+          <Route path="/publicacion/editar/:id" element={<PublicationEditar />} />
           <Route path="/popup" element={<PopUp/>}/>
         </Route>
       </Routes>
