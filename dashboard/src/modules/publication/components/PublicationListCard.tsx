@@ -3,8 +3,8 @@ import { usePublications } from "@/modules/publication/hooks/usePublicationTypes
 import { PacmanLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import { deletePublication } from "@/modules/publication/services/Publication.api";
-import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
 import { Pencil, Trash2 } from "lucide-react";
+import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
 
 const PublicationListCard = () => {
   const navigate = useNavigate();
