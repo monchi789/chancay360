@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Save } from "lucide-react";
 import { createPublication } from "../services/Publication.api";
 import { usePublications } from "@/modules/publication/hooks/usePublicationTypes";
+import { useToast } from "@/shared/common/Toast"; // Importa el hook de Toast
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ImageUploader from "@/shared/common/ImageUpload";
@@ -17,6 +18,7 @@ import {
 
 const PublicationCreate: React.FC = () => {
   const { refetch } = usePublications();
+  const { showToast } = useToast(); // Obtén la función para mostrar toasts
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedPDFs, setSelectedPDFs] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -28,7 +30,7 @@ const PublicationCreate: React.FC = () => {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle"
   );
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const categories = ["Noticias", "Artículos", "Tutoriales", "Eventos"];
 
   const handleImageDrop = (files: File[]) => {
@@ -41,10 +43,9 @@ const PublicationCreate: React.FC = () => {
 
   const handlePDFDrop = (files: File[]) => {
     if (selectedPDFs.length + files.length > 2) {
-      setErrorMessage("Solo puedes subir un máximo de 2 archivos PDF.");
+      showToast("Solo puedes subir un máximo de 2 archivos PDF.", "error");
       return;
     }
-    setErrorMessage(null);
     setSelectedPDFs((prev) => [...prev, ...files]);
     setPdfPreviews((prev) => [...prev, ...files.map((file) => file.name)]);
   };
@@ -62,10 +63,9 @@ const PublicationCreate: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-    setErrorMessage(null);
 
     if (!content || content.trim().length < 3) {
-      setErrorMessage("El contenido debe tener al menos 3 caracteres.");
+      showToast("El contenido debe tener al menos 3 caracteres.", "error");
       setStatus("error");
       return;
     }
@@ -82,53 +82,39 @@ const PublicationCreate: React.FC = () => {
 
       await createPublication(formData);
       setStatus("success");
+      showToast("¡Publicación creada exitosamente!", "success");
+      // Limpia los campos del formulario
+      setTitle("");
+      setAuthor("");
+      setContent("");
+      setCategory("");
+      setSelectedFiles([]);
+      setSelectedPDFs([]);
+      setPreviews([]);
+      setPdfPreviews([]);
       await refetch();
     } catch (error) {
       console.error("Error al crear la publicación:", error);
-      setErrorMessage("Error al crear la publicación.");
+      showToast("Error al crear la publicación.", "error");
       setStatus("error");
     }
   };
 
   return (
     <>
-      {/* Encabezado con el componente Title */}
       <Title
         title="Crear Publicaciones"
         description="Aquí puedes crear las publicaciones"
         buttonName="Ver Publicaciones"
-        link="/publicacion" // Redirigir al presionar el botón
+        link="/publicacion"
       />
   
-      {/* Contenido del Formulario */}
       <section className="w-full px-5 py-5">
-        {/* Alertas de estado */}
-        {status === "success" && (
-          <div
-            role="alert"
-            className="text-green-600 bg-green-100 p-3 rounded-md text-sm text-center"
-          >
-            Publicación creada con éxito.
-          </div>
-        )}
-        {errorMessage && (
-          <div
-            role="alert"
-            className="bg-red-50 border border-red-300 text-red-700 p-3 rounded-md text-sm text-center"
-          >
-            {errorMessage}
-          </div>
-        )}
-  
         {/* Formulario */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-8 max-w-7xl mx-auto"
-        >
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Primera Columna */}
             <fieldset className="space-y-4">
-              {/* Campo Título */}
               <div>
                 <label
                   htmlFor="title"
@@ -144,8 +130,7 @@ const PublicationCreate: React.FC = () => {
                   required
                 />
               </div>
-  
-              {/* Campo Autor */}
+
               <div>
                 <label
                   htmlFor="author"
@@ -161,8 +146,7 @@ const PublicationCreate: React.FC = () => {
                   required
                 />
               </div>
-  
-              {/* Campo Categoría */}
+
               <div>
                 <label
                   htmlFor="category"
@@ -183,8 +167,7 @@ const PublicationCreate: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-  
-              {/* Campo Imágenes */}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Imágenes
@@ -195,8 +178,7 @@ const PublicationCreate: React.FC = () => {
                   removeImage={removeImage}
                 />
               </div>
-  
-              {/* Campo Archivos PDF */}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Archivos PDF
@@ -205,18 +187,12 @@ const PublicationCreate: React.FC = () => {
                   previews={pdfPreviews}
                   onDrop={handlePDFDrop}
                   removeFile={removePDF}
-                  validationError={
-                    selectedPDFs.length > 2
-                      ? "Solo puedes subir un máximo de 2 archivos PDF."
-                      : null
-                  }
                 />
               </div>
             </fieldset>
-  
+
             {/* Segunda Columna */}
             <fieldset className="space-y-6">
-              {/* Editor de Contenido */}
               <div>
                 <label
                   htmlFor="content"
@@ -235,8 +211,7 @@ const PublicationCreate: React.FC = () => {
                   />
                 </div>
               </div>
-  
-              {/* Botón Guardar */}
+
               <div className="flex justify-end mt-6">
                 <button
                   type="submit"
@@ -253,7 +228,6 @@ const PublicationCreate: React.FC = () => {
       </section>
     </>
   );
-  
 };
 
 export default PublicationCreate;
