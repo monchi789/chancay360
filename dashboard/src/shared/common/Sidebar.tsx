@@ -18,7 +18,7 @@ import { useNavigate, Link } from "react-router-dom"; // Importar Link
 
 const items = [
   { title: "Inicio", url: "/", icon: Home },
-  { title: "Usuarios", url: "#", icon: Users },
+  { title: "Usuarios", url: "/usuario", icon: Users },
   { title: "Clientes", url: "/cliente", icon: BookUser },
   { title: "Publicaciones", url: "/publicacion", icon: StickyNote },
   { title: "Pop Up", url: "/popup", icon: PictureInPicture2 },
@@ -28,7 +28,7 @@ const items = [
 
 const AppSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(
-    () => localStorage.getItem("sidebar-collapsed") === "true" // Lee el valor desde localStorage
+    () => localStorage.getItem("sidebar-collapsed") === "true"
   );
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const navigate = useNavigate();
@@ -37,21 +37,21 @@ const AppSidebar = () => {
   const handleLogout = () => {
     localStorage.clear();
 
-    navigate('login')
+    navigate('/login')
   }
 
   const toggleCollapse = () => {
     const newCollapsedState = !isCollapsed;
     setIsCollapsed(newCollapsedState);
-    localStorage.setItem("sidebar-collapsed", newCollapsedState.toString()); // Guarda el estado en localStorage
+    localStorage.setItem("sidebar-collapsed", newCollapsedState.toString()); 
   };
 
   useEffect(() => {
     const updateScreenSize = () => {
-      setIsSmallScreen(window.innerWidth < 640); // Detecta pantallas menores a 640px
+      setIsSmallScreen(window.innerWidth < 640); 
     };
 
-    updateScreenSize(); // Tamaño inicial
+    updateScreenSize(); 
     window.addEventListener("resize", updateScreenSize);
 
     return () => window.removeEventListener("resize", updateScreenSize);
@@ -59,7 +59,7 @@ const AppSidebar = () => {
 
   useEffect(() => {
     if (isSmallScreen) {
-      setIsCollapsed(true); // Colapsar automáticamente en pantallas pequeñas
+      setIsCollapsed(true);
     }
   }, [isSmallScreen]);
 
@@ -87,7 +87,7 @@ const AppSidebar = () => {
               {items.map((item) => (
                 <li key={item.title}>
                   <Link
-                    to={item.url} // Usar Link en lugar de <a href>
+                    to={item.url} 
                     className={`flex items-center px-3 py-3 text-yellow-50 hover:bg-yellowOrange-400 rounded-lg transition-all duration-200 ${easing} ${
                       isCollapsed ? "justify-center" : "justify-start"
                     }`}

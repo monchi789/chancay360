@@ -6,16 +6,17 @@ import {
   Patch,
   Param,
   Delete,
-  Query, UseGuards,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { GeneralTypeService } from './general-type.service';
 import { CreateGeneralTypeDto } from './dto/create-general-type.dto';
 import { UpdateGeneralTypeDto } from './dto/update-general-type.dto';
 import { PaginationDto } from '../shared/dto/pagination.dto';
-import {Auth} from "../auth/decorators/auth.decorators";
-import {Rol} from "../shared/enums/rol.enum";
-import {AuthGuard} from "../auth/guard/auth.guard";
-import {RolesGuard} from "../auth/guard/roles.guard";
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Rol } from '../shared/enums/rol.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Controller('general-type')
 export class GeneralTypeController {

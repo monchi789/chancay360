@@ -9,17 +9,18 @@ import {
   UploadedFile,
   UseInterceptors,
   UploadedFiles,
-  Query, UseGuards,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PublicationService } from './publication.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from '../shared/dto/pagination.dto';
-import {Auth} from "../auth/decorators/auth.decorators";
-import {Rol} from "../shared/enums/rol.enum";
-import {AuthGuard} from "../auth/guard/auth.guard";
-import {RolesGuard} from "../auth/guard/roles.guard";
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Rol } from '../shared/enums/rol.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Controller('publication')
 export class PublicationController {

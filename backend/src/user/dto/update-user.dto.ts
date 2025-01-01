@@ -35,7 +35,7 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   googleId?: string;
-  
+
   @IsString()
   @IsOptional()
   avatar?: string;

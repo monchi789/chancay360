@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {CreateGalleryDto} from './dto/create-gallery.dto';
-import {UpdateGalleryDto} from './dto/update-gallery.dto';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Gallery} from './entities/gallery.entity';
-import {Repository} from 'typeorm';
-import {ServicesService} from 'src/services/services.service';
-import {PaginationDto} from '../shared/dto/pagination.dto';
-import {PaginationService} from '../shared/util/pagination.util';
+import { CreateGalleryDto } from './dto/create-gallery.dto';
+import { UpdateGalleryDto } from './dto/update-gallery.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Gallery } from './entities/gallery.entity';
+import { Repository } from 'typeorm';
+import { ServicesService } from 'src/services/services.service';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationService } from '../shared/util/pagination.util';
 
 @Injectable()
 export class GalleryService {
@@ -18,8 +18,7 @@ export class GalleryService {
     @InjectRepository(Gallery)
     private readonly galleryRepository: Repository<Gallery>,
     private readonly servicesService: ServicesService,
-  ) {
-  }
+  ) {}
 
   async create(
     createGalleryDto: CreateGalleryDto,
@@ -57,7 +56,7 @@ export class GalleryService {
   }
 
   async findAll(paginationDto?: PaginationDto) {
-    const {page, limit} = paginationDto || {};
+    const { page, limit } = paginationDto || {};
     return PaginationService.paginate(this.galleryRepository, {
       page,
       limit,
@@ -73,11 +72,11 @@ export class GalleryService {
   async findOne(idGallery: number) {
     try {
       const gallery = await this.galleryRepository.findOne({
-        where: {idGallery},
+        where: { idGallery },
         select: ['idGallery', 'images', 'publicationDate', 'description'],
         order: {
-          idGallery: 'DESC'
-        }
+          idGallery: 'DESC',
+        },
       });
 
       if (!gallery) {
@@ -95,10 +94,10 @@ export class GalleryService {
   async update(
     idGallery: number,
     updateGalleryDto: UpdateGalleryDto,
-    files: { images?: Express.Multer.File[] }
+    files: { images?: Express.Multer.File[] },
   ) {
     const gallery = await this.galleryRepository.findOne({
-      where: {idGallery},
+      where: { idGallery },
     });
 
     if (!gallery) {
@@ -118,7 +117,8 @@ export class GalleryService {
       }
 
       const imagesToDelete = gallery.images.filter(
-        img => !existingImages.includes(img) && !existingImages.includes(`/${img}`)
+        (img) =>
+          !existingImages.includes(img) && !existingImages.includes(`/${img}`),
       );
 
       if (imagesToDelete.length > 0) {
@@ -129,39 +129,37 @@ export class GalleryService {
             } catch (error) {
               console.warn(`Warning: Could not delete image ${img}`, error);
             }
-          })
+          }),
         );
       }
 
-      const finalImages = [
-        ...existingImages,
-        ...newImages
-      ];
+      const finalImages = [...existingImages, ...newImages];
 
       await this.galleryRepository.update(
-        {idGallery},
+        { idGallery },
         {
           description: updateGalleryDto.description,
           images: finalImages,
-        }
+        },
       );
 
       return await this.galleryRepository.findOne({
-        where: {idGallery},
+        where: { idGallery },
       });
     } catch (error) {
       if (newImages.length > 0) {
         await Promise.all(
-          newImages.map(img =>
-            this.servicesService.deleteImages([img])
-              .catch(err => console.error(`Error cleaning up image ${img}:`, err))
-          )
+          newImages.map((img) =>
+            this.servicesService
+              .deleteImages([img])
+              .catch((err) =>
+                console.error(`Error cleaning up image ${img}:`, err),
+              ),
+          ),
         );
       }
 
-      throw new BadRequestException(
-        `Error updating gallery: ${error.message}`
-      );
+      throw new BadRequestException(`Error updating gallery: ${error.message}`);
     }
   }
 
@@ -172,6 +170,6 @@ export class GalleryService {
       throw new BadRequestException(`Gallery with ID ${idGallery} not found`);
     }
 
-    return {message: `Gallery with ID ${idGallery} deleted`};
+    return { message: `Gallery with ID ${idGallery} deleted` };
   }
 }
