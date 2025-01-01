@@ -69,7 +69,7 @@ export class PublicationController {
   update(
     @Param('id') id: string,
     @Body() updatePublicationDto: UpdatePublicationDto,
-    @UploadedFile()
+    @UploadedFiles()
     files: {
       cover?: Express.Multer.File[];
       file?: Express.Multer.File[];
