@@ -3,12 +3,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import {UserService} from '../user/user.service';
-import {JwtService} from '@nestjs/jwt';
-import {RegisterDto} from './dto/register.dto';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
-import {LoginDto} from './dto/login.dto';
-import {UpdatePasswordDto} from './dto/update-password.dto';
+import { LoginDto } from './dto/login.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +17,9 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {
-  }
+  ) {}
 
-  async register({name, lastName, password, user, email}: RegisterDto) {
+  async register({ name, lastName, password, user, email }: RegisterDto) {
     const username = await this.userService.findByEmail(email);
 
     if (username) {
@@ -48,7 +47,7 @@ export class AuthService {
     };
   }
 
-  async login({email, password}: LoginDto) {
+  async login({ email, password }: LoginDto) {
     const user = await this.userService.findByEmailWithPassword(email);
 
     if (!user) {
@@ -91,14 +90,14 @@ export class AuthService {
       }
 
       const newAccessToken = await this.jwtService.signAsync(
-        {email: user.email, rol: user.rol, id: user.idUser, user: user.user},
+        { email: user.email, rol: user.rol, id: user.idUser, user: user.user },
         {
           secret: process.env.JWT_ACCESS_TOKEN,
           expiresIn: process.env.JWT_TIME,
         },
       );
 
-      return {accessToken: newAccessToken, refreshToken};
+      return { accessToken: newAccessToken, refreshToken };
     } catch {
       throw new UnauthorizedException('Refresh token is invalid o expire');
     }
@@ -106,7 +105,7 @@ export class AuthService {
 
   async changePassword(
     idUser: string,
-    {email, password, newPassword}: UpdatePasswordDto,
+    { email, password, newPassword }: UpdatePasswordDto,
   ) {
     const username = await this.userService.findByEmailWithPassword(email);
 
@@ -130,11 +129,13 @@ export class AuthService {
     return this.userService.findByEmail(email);
   }
 
-  async profile({email}: { email: string }) {
+  async profile({ email }: { email: string }) {
     return await this.userService.findByEmail(email);
   }
 
-  async generateJwt(payload: any): Promise<{ accessToken: string; refreshToken: string; email: string }> {
+  async generateJwt(
+    payload: any,
+  ): Promise<{ accessToken: string; refreshToken: string; email: string }> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_ACCESS_TOKEN,

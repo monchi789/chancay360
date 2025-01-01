@@ -11,20 +11,19 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {PopUpService} from './pop-up.service';
-import {CreatePopUpDto} from './dto/create-pop-up.dto';
-import {UpdatePopUpDto} from './dto/update-pop-up.dto';
-import {FilesInterceptor} from '@nestjs/platform-express';
-import {PaginationDto} from '../shared/dto/pagination.dto';
-import {Auth} from "../auth/decorators/auth.decorators";
-import {Rol} from "../shared/enums/rol.enum";
-import {AuthGuard} from "../auth/guard/auth.guard";
-import {RolesGuard} from "../auth/guard/roles.guard";
+import { PopUpService } from './pop-up.service';
+import { CreatePopUpDto } from './dto/create-pop-up.dto';
+import { UpdatePopUpDto } from './dto/update-pop-up.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Rol } from '../shared/enums/rol.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Controller('pop-up')
 export class PopUpController {
-  constructor(private readonly popUpService: PopUpService) {
-  }
+  constructor(private readonly popUpService: PopUpService) {}
 
   @Post()
   @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)

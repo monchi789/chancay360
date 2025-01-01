@@ -146,7 +146,7 @@ export const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
         <AlertDialogTitle>{title}</AlertDialogTitle>
         <AlertDialogDescription>{description}</AlertDialogDescription>
       </AlertDialogHeader>
-      <AlertDialogFooter>
+      <AlertDialogFooter className="flex gap-y-4">
         <AlertDialogCancel>Cancelar</AlertDialogCancel>
         <AlertDialogAction onClick={onConfirm}>Sí, Eliminar</AlertDialogAction>
       </AlertDialogFooter>

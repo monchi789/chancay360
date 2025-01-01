@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/shared/components/ui/button"; // Importando el componente Button de Shadcn
+import { Button } from "@/shared/components/ui/button";
 
 interface TitleProps {
   title: string;
@@ -17,6 +17,7 @@ const Title = ({
   openModal,
 }: TitleProps) => {
   return (
+
     <div className="flex flex-col items-center lg:flex-row lg:justify-between lg:items-center bg-gradient-to-r from-ceruleanBlue-800 to-ceruleanBlue-600 shadow-lg rounded-lg overflow-hidden border-b border-gray-200 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
       {/* Contenido del título */}
       <div className="text-center lg:text-left">

@@ -26,7 +26,6 @@ export class RolesGuard implements CanActivate {
       const { user } = context.switchToHttp().getRequest();
 
       return Array.isArray(rol) ? rol.includes(user.rol) : rol === user.rol;
-      
     } catch {
       throw new UnauthorizedException('Invalid Token');
     }

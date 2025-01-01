@@ -1,17 +1,26 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards,} from '@nestjs/common';
-import {ClientService} from './client.service';
-import {CreateClientDto} from './dto/create-client.dto';
-import {UpdateClientDto} from './dto/update-client.dto';
-import {PaginationDto} from 'src/shared/dto/pagination.dto';
-import {Auth} from "../auth/decorators/auth.decorators";
-import {Rol} from "../shared/enums/rol.enum";
-import {AuthGuard} from "../auth/guard/auth.guard";
-import {RolesGuard} from "../auth/guard/roles.guard";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ClientService } from './client.service';
+import { CreateClientDto } from './dto/create-client.dto';
+import { UpdateClientDto } from './dto/update-client.dto';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Rol } from '../shared/enums/rol.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Controller('client')
 export class ClientController {
-  constructor(private readonly clientService: ClientService) {
-  }
+  constructor(private readonly clientService: ClientService) {}
 
   @Post()
   @Auth(Rol.ADMIN, Rol.GESTOR_CLIENTES)

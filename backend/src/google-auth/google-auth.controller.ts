@@ -10,10 +10,14 @@ export class GoogleAuthController {
 
   @Get('redirect')
   @UseGuards(AuthGuard('google'))
-  async googleLoginRedirect(@Req() req: any, @Res() res: Response): Promise<void> {
+  async googleLoginRedirect(
+    @Req() req: any,
+    @Res() res: Response,
+  ): Promise<void> {
     const { accessToken, refreshToken, user } = req.user;
 
-    const redirectUrl = `${process.env.FRONTEND_URL}/auth/callback?` +
+    const redirectUrl =
+      `${process.env.FRONTEND_URL}/auth/callback?` +
       `accessToken=${accessToken}&` +
       `refreshToken=${refreshToken}&` +
       `email=${user.email}&` +
