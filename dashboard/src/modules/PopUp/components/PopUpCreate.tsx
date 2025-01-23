@@ -1,0 +1,108 @@
+import React, { useState } from "react";
+import { Save } from "lucide-react";
+import { createPopUp } from "../services/PopUp.api";
+import { usePopUps } from "@/modules/PopUp/hooks/usePopUp";
+import ImageUploader from "@/shared/common/ImageUpload";
+
+interface PopUpCreateProps {
+  onClose: () => void;
+}
+
+const PopUpCardCreate: React.FC<PopUpCreateProps> = ({ onClose }) => {
+  const { refetch } = usePopUps();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleDrop = (files: File[]) => {
+    const newFiles = [...selectedFiles, ...files];
+    setSelectedFiles(newFiles);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+    setStatus("loading");
+
+    if (selectedFiles.length === 0) {
+      setErrorMessage("Por favor, selecciona al menos una imagen");
+      setStatus("error");
+      return;
+    }
+
+    const formData = new FormData();
+    selectedFiles.forEach((file) => formData.append("images", file));
+
+    try {
+      await createPopUp(formData); 
+      await refetch(); 
+      setStatus("success");
+      onClose(); 
+    } catch (error) {
+      console.error("Error al crear el PopUp:", error);
+      setErrorMessage("Error al crear el PopUp");
+      setStatus("error");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg">
+      <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">
+        Crear Nuevo PopUp
+      </h2>
+
+      {status === "success" && (
+        <p className="text-green-600 bg-green-100 p-2 rounded-lg">
+          PopUp creado con éxito.
+        </p>
+      )}
+      {errorMessage && (
+        <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
+          {errorMessage}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700">
+            Imágenes
+          </label>
+          <ImageUploader
+            previews={previews}
+            onDrop={handleDrop}
+            removeImage={removeImage}
+            validationError={selectedFiles.length === 0 ? errorMessage : undefined}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          <Save className="w-4 h-4 inline-block mr-1"/> Guardar
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default PopUpCardCreate;

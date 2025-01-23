@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Save } from "lucide-react";
-import { createPublication } from "../services/Publication.api";
-import { usePublications } from "@/modules/publication/hooks/usePublicationTypes";
-import { useToast } from "@/shared/common/Toast"; // Importa el hook de Toast
+import Title from "@/shared/common/Title";
+import React, { useState, useEffect } from "react";
+import { Save } from "lucide-react"; // Íconos
+import { useToast } from "@/shared/common/Toast";
+import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ImageUploader from "@/shared/common/ImageUpload";
 import PDFUploader from "@/shared/common/PdfUpload";
-import Title from "@/shared/common/Title.tsx";
+
 import {
   Select,
   SelectContent,
@@ -15,27 +15,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-const PublicationCreate: React.FC = () => {
-  const { refetch } = usePublications();
-  const { showToast } = useToast(); // Obtén la función para mostrar toasts
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [selectedPDFs, setSelectedPDFs] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
-  const [pdfPreviews, setPdfPreviews] = useState<string[]>([]);
+import { getPublicationById, updatePublication } from "../services/Publication.api";
+
+const PublicationUpdate: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
-  );
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedPDFs, setSelectedPDFs] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]); // Nuevas imágenes
+  const [existingPreviews, setExistingPreviews] = useState<string[]>([]); // Imágenes existentes
+  const [pdfPreviews, setPdfPreviews] = useState<string[]>([]);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const categories = ["Noticias", "Artículos", "Tutoriales", "Eventos"];
+
+  useEffect(() => {
+    const fetchPublication = async () => {
+      try {
+        const data = await getPublicationById(id!);
+        setTitle(data.title);
+        setAuthor(data.author);
+        setContent(data.content);
+        setCategory(data.category);
+  
+        // Configurar URLs completas para imágenes existentes
+        const baseURL = process.env.REACT_APP_API_URL || ""; // Usa tu base URL aquí
+        setExistingPreviews((data.cover || []).map((img) => `${baseURL}/uploads/publications/covers/${img}`));
+        setPdfPreviews(data.file || []);
+      } catch (error) {
+        showToast("Error al cargar la publicación.", "error");
+      }
+    };
+    fetchPublication();
+  }, [id]);
+  
 
   const handleImageDrop = (files: File[]) => {
     const newFiles = [...selectedFiles, ...files];
     setSelectedFiles(newFiles);
-
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
@@ -52,6 +75,10 @@ const PublicationCreate: React.FC = () => {
   const removeImage = (index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const removePDF = (index: number) => {
@@ -76,49 +103,42 @@ const PublicationCreate: React.FC = () => {
       formData.append("category", category);
       formData.append("content", content);
 
+      // Agregar imágenes existentes que no fueron eliminadas
+      existingPreviews.forEach((url) => formData.append("existingCover", url));
+
+      // Agregar nuevas imágenes y PDFs
       selectedFiles.forEach((file) => formData.append("cover", file));
       selectedPDFs.forEach((file) => formData.append("file", file));
 
-      await createPublication(formData);
+      await updatePublication(id!, formData);
       setStatus("success");
-      showToast("¡Publicación creada exitosamente!", "success");
-      // Limpia los campos del formulario
-      setTitle("");
-      setAuthor("");
-      setContent("");
-      setCategory("");
-      setSelectedFiles([]);
-      setSelectedPDFs([]);
-      setPreviews([]);
-      setPdfPreviews([]);
-      await refetch();
+      showToast("¡Publicación actualizada exitosamente!", "success");
+      navigate("/publicacion");
     } catch (error) {
-      console.error("Error al crear la publicación:", error);
-      showToast("Error al crear la publicación.", "error");
+      showToast("Error al actualizar la publicación.", "error");
       setStatus("error");
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/publicacion");
   };
 
   return (
     <>
       <Title
-        title="Crear Publicaciones"
-        description="Aquí puedes crear las publicaciones"
-        buttonName="Ver Publicaciones"
+        title="Actualizar Publicación"
+        description="Aquí puedes editar las publicaciones existentes"
+        buttonName="Cancelar"
         link="/publicacion"
       />
-  
+
       <section className="w-full px-5 py-5">
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="space-y-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Primera Columna */}
             <fieldset className="space-y-4">
               <div>
-                <label
-                  htmlFor="title"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                   Título <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -129,12 +149,8 @@ const PublicationCreate: React.FC = () => {
                   required
                 />
               </div>
-
               <div>
-                <label
-                  htmlFor="author"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
                   Autor <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -145,15 +161,11 @@ const PublicationCreate: React.FC = () => {
                   required
                 />
               </div>
-
               <div>
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Categoría <span className="text-red-500">*</span>
                 </label>
-                <Select onValueChange={(value) => setCategory(value)}>
+                <Select onValueChange={(value) => setCategory(value)} value={category}>
                   <SelectTrigger className="w-full p-2 rounded-md border focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
@@ -166,22 +178,20 @@ const PublicationCreate: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Imágenes
+                  Imágenes Existentes
                 </label>
                 <ImageUploader
                   previews={previews}
+                  existingPreviews={existingPreviews}
                   onDrop={handleImageDrop}
                   removeImage={removeImage}
+                  removeExistingImage={removeExistingImage}
                 />
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Archivos PDF
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Archivos PDF</label>
                 <PDFUploader
                   previews={pdfPreviews}
                   onDrop={handlePDFDrop}
@@ -190,13 +200,9 @@ const PublicationCreate: React.FC = () => {
               </div>
             </fieldset>
 
-            {/* Segunda Columna */}
             <fieldset className="space-y-6">
               <div>
-                <label
-                  htmlFor="content"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
                   Contenido <span className="text-red-500">*</span>
                 </label>
                 <div className="border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none overflow-hidden">
@@ -211,7 +217,8 @@ const PublicationCreate: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end gap-4 mt-6">
+                
                 <button
                   type="submit"
                   disabled={status === "loading"}
@@ -229,4 +236,4 @@ const PublicationCreate: React.FC = () => {
   );
 };
 
-export default PublicationCreate;
+export default PublicationUpdate;
