@@ -1,18 +1,18 @@
-import React, { useState, FormEvent, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { RootState, AppDispatch } from '@/app/store';
+import React, {useState, FormEvent, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {RootState, AppDispatch} from '@/app/store';
 
-import { UserCircle, Lock, Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
-import { Alert, AlertDescription } from '@/shared/components/ui/alert';
+import {UserCircle, Lock, Eye, EyeOff} from 'lucide-react';
+import {Button} from '@/shared/components/ui/button';
+import {Input} from '@/shared/components/ui/input';
+import {Alert, AlertDescription} from '@/shared/components/ui/alert';
 import chancay360 from '@/assets/images/logo.svg';
 
-import { login, reset, handleGoogleRedirect } from '../redux/authSlice';
-import { PacmanLoader } from "react-spinners";
+import {login, reset, handleGoogleRedirect} from '../redux/authSlice';
+import {PacmanLoader} from "react-spinners";
 import authService from '../redux/authService';
-import { GoogleRedirectParams } from "@/modules/auth/types/auth";
+import {GoogleRedirectParams} from "@/modules/auth/types/auth";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -24,13 +24,13 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  const { email, password } = formData;
+  const {email, password} = formData;
 
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
+  const {user, isLoading, isError, isSuccess, message} = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -42,7 +42,6 @@ const Login: React.FC = () => {
     dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
-  // Efecto para manejar la redirección de Google
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const params: GoogleRedirectParams = {
@@ -84,7 +83,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoginError(null); // Limpiar cualquier error previo
+    setLoginError(null);
 
     const userData = {
       email,
@@ -113,7 +112,7 @@ const Login: React.FC = () => {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header with Logo */}
         <div className="w-full flex justify-center pt-8 pb-4">
-          <img src={chancay360} alt="Logo wonder" className="w-32" loading="lazy" />
+          <img src={chancay360} alt="Logo wonder" className="h-14" loading="lazy"/>
         </div>
 
         {/* Login Form Section */}
@@ -148,7 +147,7 @@ const Login: React.FC = () => {
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <UserCircle className="h-5 w-5 text-gray-400" />
+                      <UserCircle className="h-5 w-5 text-gray-400"/>
                     </div>
                     <Input
                       id="email"
@@ -171,7 +170,7 @@ const Login: React.FC = () => {
                   </label>
                   <div className="mt-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-gray-400"/>
                     </div>
                     <Input
                       id="contrasena"
@@ -191,9 +190,9 @@ const Login: React.FC = () => {
                       onClick={togglePasswordVisibility}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-500"/>
                       ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-500"/>
                       )}
                     </button>
                   </div>
@@ -208,26 +207,26 @@ const Login: React.FC = () => {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-wonder-blue focus:ring-wonder"
+                    className="h-4 w-4 rounded border-gray-300 focus:ring-wonder"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                     Recordarme
                   </label>
                 </div>
 
-                <a href="#" className="text-sm font-medium text-wonder-blue hover:text-wonder">
+                <a href="#" className="text-sm font-medium  hover:text-wonder">
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
 
               <Button
                 type="submit"
-                className="w-full text-white bg-mediumPurple-700 hover:bg-mediumPurple-800 transition-colors duration-300"
+                className="w-full text-white bg-prussianBlue-600 hover:bg-prussianBlue-800 transition-colors duration-300"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
-                    <PacmanLoader color="#FFA938" size={20} />
+                    <PacmanLoader color="#FFA938" size={20}/>
                   </div>
                 ) : (
                   'Iniciar Sesión'

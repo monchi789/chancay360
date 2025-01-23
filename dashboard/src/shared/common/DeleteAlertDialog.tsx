@@ -100,7 +100,7 @@ const AlertDialogAction = React.forwardRef<
     ref={ref}
     className={cn(
       buttonVariants(),
-      "bg-yellowOrange-600 text-white hover:bg-yellowOrange-800",
+      "bg-brightRed-600 text-white hover:bg-brightRed-800",
       className
     )}
     {...props}
@@ -114,7 +114,7 @@ const AlertDialogCancel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Cancel
     ref={ref}
-    className={cn(buttonVariants(), "bg-ceruleanBlue-600 text-white hover:bg-ceruleanBlue-800", className)}
+    className={cn(buttonVariants(), "bg-prussianBlue-600 text-white hover:bg-prussianBlue-800", className)}
     {...props}
   />
 ));
@@ -136,7 +136,7 @@ export const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
   <AlertDialog>
     <AlertDialogTrigger asChild>
       {trigger || (
-        <button className="ml-4 text-white bg-yellowOrange-600 hover:bg-yellowOrange-900 py-2 px-4 rounded-md">
+        <button className="ml-4 text-white bg-brightRed-600 hover:bg-brightRed-800 py-2 px-4 rounded-md">
           Eliminar
         </button>
       )}

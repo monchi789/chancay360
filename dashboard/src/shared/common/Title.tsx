@@ -17,7 +17,7 @@ const Title = ({
   openModal,
 }: TitleProps) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between bg-gradient-to-r from-ceruleanBlue-800 to-ceruleanBlue-600 shadow-lg rounded-lg overflow-hidden border-b border-gray-200 px-6 py-4">
+    <div className="flex flex-col md:flex-row justify-between bg-gradient-to-r from-prussianBlue-800 to-prussianBlue-600 shadow-lg rounded-lg overflow-hidden border-b border-gray-200 px-6 py-4">
       <div>
         <div className="flex items-center space-x-3">
           <h2 className="text-white text-3xl font-semibold">{title}</h2>
@@ -29,7 +29,7 @@ const Title = ({
         <Link to={link} className="">
           <Button
             onClick={openModal}
-            className="bg-yellowOrange-300  rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mt-4 px-6 py-2 text-white font-semibold"
+            className="bg-carrotOrange-400 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 mt-4 px-6 py-2 text-white font-semibold"
           >
             {buttonName}
           </Button>
