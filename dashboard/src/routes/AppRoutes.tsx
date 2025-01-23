@@ -1,20 +1,17 @@
+import {lazy, Suspense} from "react";
+import {Routes, Route} from "react-router-dom";
+import {PacmanLoader} from "react-spinners";
+import ProtectedRoutes from "@/routes/ProtectedRoutes.tsx";
 import MainLayout from "@/shared/layouts/MainLayout";
-import {lazy, Suspense } from "react";
-import {Routes, Route } from "react-router-dom";
-import {PacmanLoader } from "react-spinners";
-import ProtectedRoutes from "@/routes/ProtectedRoutes.tsx"
+
 const Home = lazy(() => import("@/modules/home/pages/HomeMain"));
-const GeneralType = lazy(
-  () => import("@/modules/general-type/pages/GeneralTypeMain")
-);
+const GeneralType = lazy(() => import("@/modules/general-type/pages/GeneralTypeMain"));
 const Gallery = lazy(() => import("@/modules/gallery/pages/GalleryMain"));
 const Client = lazy(() => import("@/modules/client/pages/ClientMain"));
 const Login = lazy(() => import("@/modules/auth/pages/Login"));
 const Publication = lazy(() => import("@/modules/publication/pages/PublicationMain"));
 const User = lazy(() => import("@/modules/users/pages/UserMain"));
-const PublicationCrear = lazy(() => import("@/modules/publication/components/PublicationCreate"));
-const PublicationEditar = lazy(() => import("@/modules/publication/components/PublicationUpdate"));
-const PopUp = lazy(() => import("@/modules/PopUp/pages/PopUpMain"));
+const Public = lazy(() => import("@/modules/public/pages/PublicMain"));
 
 const AppRoutes = () => {
   return (
@@ -26,23 +23,60 @@ const AppRoutes = () => {
       }
     >
       <Routes>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/auth/callback' element={<Login/>}/>
+        {/* Rutas públicas */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/auth/callback" element={<Login />} />
+        <Route path="/public" element={<Public />} />
 
-        <Route element={
-          <ProtectedRoutes>
-            <MainLayout/>
-          </ProtectedRoutes>
-        }>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/usuario" element={<User/>}/>
-          <Route path="/tipo-general" element={<GeneralType/>}/>
-          <Route path="/cliente" element={<Client/>}/>
-          <Route path="/galeria" element={<Gallery/>}/>
-          <Route path="/publicacion" element={<Publication/>}/>
-          <Route path="/publicacion/crear" element={<PublicationCrear/>}/>
-          <Route path="/publicacion/editar/:id" element={<PublicationEditar />} />
-          <Route path="/popup" element={<PopUp/>}/>
+        {/* Rutas protegidas */}
+        <Route
+          element={
+            <ProtectedRoutes>
+              <MainLayout />
+            </ProtectedRoutes>
+          }
+        >
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/usuario"
+            element={
+              <ProtectedRoutes requiredRoles={["ADMIN"]}>
+                <User />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/tipo-general"
+            element={
+              <ProtectedRoutes requiredRoles={["ADMIN"]}>
+                <GeneralType />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/cliente"
+            element={
+              <ProtectedRoutes requiredRoles={["GESTOR_CLIENTES", "ADMIN"]}>
+                <Client />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/galeria"
+            element={
+              <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
+                <Gallery />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/publicacion"
+            element={
+              <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
+                <Publication />
+              </ProtectedRoutes>
+            }
+          />
         </Route>
       </Routes>
     </Suspense>
@@ -50,4 +84,3 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
-

@@ -138,15 +138,25 @@ export class UserService {
 
   async update(idUser: string, updateUserDto: UpdateUserDto) {
     try {
+      if (updateUserDto.password) {
+        const salt = await bcrypt.genSalt();
+        updateUserDto.password = await bcrypt.hash(
+          updateUserDto.password,
+          salt,
+        );
+      }
+
       const user = await this.userRepository.update(idUser, updateUserDto);
 
       if (user.affected === 0) {
-        new BadRequestException(`User with ID ${idUser} not found`);
+        throw new BadRequestException(`User with ID ${idUser} not found`);
       }
 
       return this.userRepository.findOne({ where: { idUser } });
-    } catch {
-      new BadRequestException(`User with ID ${idUser} not found`);
+    } catch (error) {
+      if (error) {
+        throw new BadRequestException(`User with ID ${idUser} not found`);
+      }
     }
   }
 
