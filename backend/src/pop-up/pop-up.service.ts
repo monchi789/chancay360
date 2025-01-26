@@ -20,28 +20,28 @@ export class PopUpService {
     private readonly servicesService: ServicesService,
   ) {}
 
-  async create(createPopUpDto: CreatePopUpDto, image: Express.Multer.File[]) {
-    let imagePath: string[] = [];
+  async create(createPopUpDto: CreatePopUpDto, images: Express.Multer.File[]) {
+    let imagesPaths: string[] = [];
 
     try {
-      if (image?.length) {
-        imagePath = await this.servicesService.uploadImage(
-          image,
+      if (images?.length) {
+        imagesPaths = await this.servicesService.uploadImage(
+          images,
           'pop-up/images',
         );
       }
 
       const popUpData = {
         ...createPopUpDto,
-        images: imagePath,
+        images: imagesPaths,
       };
 
       const newPopUp = this.popUpRepository.create(popUpData);
 
       return await this.popUpRepository.save(newPopUp);
     } catch (error) {
-      if (imagePath.length) {
-        await this.servicesService.deleteImages(imagePath);
+      if (imagesPaths.length) {
+        await this.servicesService.deleteImages(imagesPaths);
       }
 
       if (error instanceof BadRequestException) {
@@ -91,7 +91,7 @@ export class PopUpService {
       where: { idPopUp },
     });
 
-    if (popUp) {
+    if (!popUp) {
       throw new NotFoundException('Pop Up not found');
     }
 

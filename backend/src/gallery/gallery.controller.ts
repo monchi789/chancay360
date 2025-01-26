@@ -30,9 +30,9 @@ export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images', 20))
   @Auth(Rol.CREADOR_CONTENIDO, Rol.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
+  @UseInterceptors(FilesInterceptor('images', 20))
   create(
     @Body() createGalleryDto: CreateGalleryDto,
     @UploadedFiles() files: Express.Multer.File[],

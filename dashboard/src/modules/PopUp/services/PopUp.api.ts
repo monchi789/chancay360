@@ -27,7 +27,7 @@ export const updatePopUp = async (
     });
     return res.data;
   } catch {
-    throw new Error('Error updating pop-up');
+    throw new Error("Error updating pop-up");
   }
 };
 
@@ -49,6 +49,6 @@ export const deletePopUp = async (idPopUp: number): Promise<PopUp> => {
     const res = await axiosInstance.delete(`pop-up/${idPopUp}`);
     return res.data;
   } catch {
-    throw new Error('Error deleting pop-up');
+    throw new Error("Error deleting pop-up");
   }
 };

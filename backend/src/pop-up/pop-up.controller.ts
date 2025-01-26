@@ -28,7 +28,7 @@ export class PopUpController {
   @Post()
   @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(FilesInterceptor('image', 1))
+  @UseInterceptors(FilesInterceptor('images', 3))
   create(
     @Body() createPopUpDto: CreatePopUpDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -49,7 +49,9 @@ export class PopUpController {
   @Patch(':id')
   @Auth(Rol.ADMIN, Rol.CREADOR_CONTENIDO)
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(FilesInterceptor('image', 1))
+
+  // Aumentamos el limite de las imagenes que pueden subir
+  @UseInterceptors(FilesInterceptor('images', 3))
   update(
     @Param('id') id: string,
     @Body() updatePopUpDto: UpdatePopUpDto,

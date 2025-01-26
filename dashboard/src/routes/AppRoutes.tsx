@@ -4,6 +4,7 @@ import {PacmanLoader} from "react-spinners";
 import ProtectedRoutes from "@/routes/ProtectedRoutes.tsx";
 import MainLayout from "@/shared/layouts/MainLayout";
 
+
 const Home = lazy(() => import("@/modules/home/pages/HomeMain"));
 const GeneralType = lazy(() => import("@/modules/general-type/pages/GeneralTypeMain"));
 const Gallery = lazy(() => import("@/modules/gallery/pages/GalleryMain"));
@@ -12,6 +13,9 @@ const Login = lazy(() => import("@/modules/auth/pages/Login"));
 const Publication = lazy(() => import("@/modules/publication/pages/PublicationMain"));
 const User = lazy(() => import("@/modules/users/pages/UserMain"));
 const Public = lazy(() => import("@/modules/public/pages/PublicMain"));
+const PopUp = lazy(() => import("@/modules/PopUp/pages/PopUpMain"));
+const PublicationCreate = lazy(() => import("@/modules/publication/components/PublicationCreate"));
+const PublicationUpdate = lazy(() => import("@/modules/publication/components/PublicationUpdate"));
 
 const AppRoutes = () => {
   return (
@@ -74,6 +78,30 @@ const AppRoutes = () => {
             element={
               <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
                 <Publication />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/publicacion/crear"
+            element={
+              <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
+                <PublicationCreate />
+              </ProtectedRoutes>
+            }
+          />
+           <Route
+            path="/publicacion/editar/:id"
+            element={
+              <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
+                <PublicationUpdate/>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/popup"
+            element={
+              <ProtectedRoutes requiredRoles={["CREADOR_CONTENIDO", "ADMIN"]}>
+                <PopUp />
               </ProtectedRoutes>
             }
           />
