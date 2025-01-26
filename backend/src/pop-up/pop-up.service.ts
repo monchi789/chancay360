@@ -87,43 +87,34 @@ export class PopUpService {
     updatePopUpDto: UpdatePopUpDto,
     image: Express.Multer.File[],
   ) {
-    const popUp = await this.popUpRepository.findOne({
-      where: { idPopUp },
-    });
+    const popUp = await this.popUpRepository.findOne({ where: { idPopUp } });
 
     if (!popUp) {
       throw new NotFoundException('Pop Up not found');
     }
 
-    let newImage: string[] = [];
+    let newImagePaths: string[] = [];
 
     try {
       if (image?.length) {
-        newImage = await this.servicesService.uploadImage(
+        newImagePaths = await this.servicesService.uploadImage(
           image,
           'pop-up/images',
         );
       }
 
-      if (popUp.images.length) {
-        await this.servicesService.deleteImages(popUp.images).catch((error) => {
-          console.log('Error deleting image', error);
-        });
-      }
+      const updatedImages = [
+        ...(updatePopUpDto.images || []), // Mantener imágenes existentes
+        ...newImagePaths, // Agregar nuevas imágenes
+      ];
 
       const updateData = {
-        ...updatePopUpDto,
-        ...(newImage.length && { images: newImage }),
+        images: updatedImages,
       };
 
       await this.popUpRepository.update(idPopUp, updateData);
-
       return await this.popUpRepository.findOne({ where: { idPopUp } });
     } catch (error) {
-      if (newImage.length) {
-        await this.servicesService.deleteImages(newImage);
-      }
-
       throw new BadRequestException(`Error updating pop up: ${error.message}`);
     }
   }

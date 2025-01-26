@@ -41,15 +41,15 @@ const PopUpCardUpdate: React.FC<PopUpEditProps> = ({ idPopUp, onClose }) => {
   }, [idPopUp]);
 
   const handleDrop = (files: File[]) => {
-    const newFiles = [...selectedFiles, ...files];
-    setSelectedFiles(newFiles);
-
+    setSelectedFiles((prev) => [...prev, ...files]);
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
   const removeImage = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    if (previews[index].startsWith("blob:")) {
+      setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    }
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -60,12 +60,10 @@ const PopUpCardUpdate: React.FC<PopUpEditProps> = ({ idPopUp, onClose }) => {
 
     const formData = new FormData();
 
-    // Adjuntar archivos seleccionados (nuevas imágenes)
     selectedFiles.forEach((file) => {
       formData.append("images", file);
     });
 
-    // Adjuntar imágenes existentes
     const existingImages = previews
       .filter((preview) => !preview.startsWith("blob:"))
       .map((preview) => preview.replace(API_URL, ""));
