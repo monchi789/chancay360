@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Save } from "lucide-react";
 import { createPopUp } from "../services/PopUp.api";
-import { usePopUps } from "@/modules/PopUp/hooks/usePopUp";
+import { usePopUps } from "@/modules/pop-up/hooks/usePopUp";
 import ImageUploader from "@/shared/common/ImageUpload";
 import { PopUp } from "@/interfaces/PopUp";
 

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { CardContent } from "@/shared/components/ui/card.tsx";
 import { Carousel, CarouselContent, CarouselItem } from "@/shared/components/ui/carousel.tsx";
-import { usePopUps } from "@/modules/PopUp/hooks/usePopUp";
+import { usePopUps } from "@/modules/pop-up/hooks/usePopUp";
 import { PacmanLoader } from "react-spinners";
-import { deletePopUp } from "@/modules/PopUp/services/PopUp.api";
+import { deletePopUp } from "@/modules/pop-up/services/PopUp.api";
 import { DeleteAlertDialog } from "@/shared/common/DeleteAlertDialog";
 import Autoplay from "embla-carousel-autoplay";
 import { Pencil, Trash2 } from "lucide-react";
-import PopUpCardUpdate from "@/modules/PopUp/components/PopUpCardUpdate.tsx";
+import PopUpCardUpdate from "@/modules/pop-up/components/PopUpCardUpdate.tsx";
 
 const PopUpListCard = () => {
   const [editingPopUpId, setEditingPopUpId] = useState<number | null>(null);

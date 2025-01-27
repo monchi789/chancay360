@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Save } from "lucide-react";
-import { updatePopUp, getPopUpById } from "@/modules/PopUp/services/PopUp.api";
-import { usePopUps } from "@/modules/PopUp/hooks/usePopUp";
+import { updatePopUp, getPopUpById } from "@/modules/pop-up/services/PopUp.api";
+import { usePopUps } from "@/modules/pop-up/hooks/usePopUp";
 import ImageUploader from "@/shared/common/ImageUpload";
 
 const API_URL = import.meta.env.VITE_URL;

@@ -1,7 +1,7 @@
 import Title from "@/shared/common/Title.tsx";
-import PopUpListCard from "@/modules/PopUp/components/PopUpListCard";
+import PopUpListCard from "@/modules/pop-up/components/PopUpListCard";
 import { useState } from "react";
-import PopUpCardCreate from "@/modules//PopUp/components/PopUpCreate";
+import PopUpCardCreate from "@/modules//pop-up/components/PopUpCreate";
 
 const PopUpMain = () => {
   const [showModal, setShowModal] = useState(false);
