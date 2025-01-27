@@ -119,7 +119,7 @@ const PublicationCreate: React.FC = () => {
                   htmlFor="title"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Título <span className="text-red-500">*</span>
+                  Título <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="title"

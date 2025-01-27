@@ -48,12 +48,12 @@ const PublicationUpdate: React.FC = () => {
         const baseURL = process.env.REACT_APP_API_URL || ""; // Usa tu base URL aquí
         setExistingPreviews((data.cover || []).map((img) => `${baseURL}/uploads/publications/covers/${img}`));
         setPdfPreviews(data.file || []);
-      } catch (error) {
+      } catch  {
         showToast("Error al cargar la publicación.", "error");
       }
     };
     fetchPublication();
-  }, [id]);
+  }, [id, showToast]);
   
 
   const handleImageDrop = (files: File[]) => {
@@ -114,14 +114,10 @@ const PublicationUpdate: React.FC = () => {
       setStatus("success");
       showToast("¡Publicación actualizada exitosamente!", "success");
       navigate("/publicacion");
-    } catch (error) {
+    } catch  {
       showToast("Error al actualizar la publicación.", "error");
       setStatus("error");
     }
-  };
-
-  const handleCancel = () => {
-    navigate("/publicacion");
   };
 
   return (

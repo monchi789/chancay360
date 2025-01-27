@@ -5,6 +5,6 @@ export class PopUp {
   @PrimaryGeneratedColumn()
   idPopUp: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', array: true })
   images: string[];
 }

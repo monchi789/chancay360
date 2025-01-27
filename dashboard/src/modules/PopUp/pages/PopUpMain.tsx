@@ -1,5 +1,5 @@
 import Title from "@/shared/common/Title.tsx";
-import PopUpListCard from "@/modules/PopUp/components/PopUpListaCard";
+import PopUpListCard from "@/modules/PopUp/components/PopUpListCard";
 import { useState } from "react";
 import PopUpCardCreate from "@/modules//PopUp/components/PopUpCreate";
 

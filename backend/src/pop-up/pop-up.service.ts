@@ -20,28 +20,28 @@ export class PopUpService {
     private readonly servicesService: ServicesService,
   ) {}
 
-  async create(createPopUpDto: CreatePopUpDto, image: Express.Multer.File[]) {
-    let imagePath: string[] = [];
+  async create(createPopUpDto: CreatePopUpDto, images: Express.Multer.File[]) {
+    let imagesPaths: string[] = [];
 
     try {
-      if (image?.length) {
-        imagePath = await this.servicesService.uploadImage(
-          image,
+      if (images?.length) {
+        imagesPaths = await this.servicesService.uploadImage(
+          images,
           'pop-up/images',
         );
       }
 
       const popUpData = {
         ...createPopUpDto,
-        images: imagePath,
+        images: imagesPaths,
       };
 
       const newPopUp = this.popUpRepository.create(popUpData);
 
       return await this.popUpRepository.save(newPopUp);
     } catch (error) {
-      if (imagePath.length) {
-        await this.servicesService.deleteImages(imagePath);
+      if (imagesPaths.length) {
+        await this.servicesService.deleteImages(imagesPaths);
       }
 
       if (error instanceof BadRequestException) {
@@ -87,43 +87,34 @@ export class PopUpService {
     updatePopUpDto: UpdatePopUpDto,
     image: Express.Multer.File[],
   ) {
-    const popUp = await this.popUpRepository.findOne({
-      where: { idPopUp },
-    });
+    const popUp = await this.popUpRepository.findOne({ where: { idPopUp } });
 
-    if (popUp) {
+    if (!popUp) {
       throw new NotFoundException('Pop Up not found');
     }
 
-    let newImage: string[] = [];
+    let newImagePaths: string[] = [];
 
     try {
       if (image?.length) {
-        newImage = await this.servicesService.uploadImage(
+        newImagePaths = await this.servicesService.uploadImage(
           image,
           'pop-up/images',
         );
       }
 
-      if (popUp.images.length) {
-        await this.servicesService.deleteImages(popUp.images).catch((error) => {
-          console.log('Error deleting image', error);
-        });
-      }
+      const updatedImages = [
+        ...(updatePopUpDto.images || []), // Mantener imágenes existentes
+        ...newImagePaths, // Agregar nuevas imágenes
+      ];
 
       const updateData = {
-        ...updatePopUpDto,
-        ...(newImage.length && { images: newImage }),
+        images: updatedImages,
       };
 
       await this.popUpRepository.update(idPopUp, updateData);
-
       return await this.popUpRepository.findOne({ where: { idPopUp } });
     } catch (error) {
-      if (newImage.length) {
-        await this.servicesService.deleteImages(newImage);
-      }
-
       throw new BadRequestException(`Error updating pop up: ${error.message}`);
     }
   }
