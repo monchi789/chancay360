@@ -13,7 +13,7 @@ const Login = lazy(() => import("@/modules/auth/pages/Login"));
 const Publication = lazy(() => import("@/modules/publication/pages/PublicationMain"));
 const User = lazy(() => import("@/modules/users/pages/UserMain"));
 const Public = lazy(() => import("@/modules/public/pages/PublicMain"));
-const PopUp = lazy(() => import("@/modules/PopUp/pages/PopUpMain"));
+const PopUp = lazy(() => import("@/modules/pop-up/pages/PopUpMain"));
 const PublicationCreate = lazy(() => import("@/modules/publication/components/PublicationCreate"));
 const PublicationUpdate = lazy(() => import("@/modules/publication/components/PublicationUpdate"));
 
