@@ -1,6 +1,19 @@
 services:
+  nginx:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
   db:
     image: postgres:16-alpine3.18
+    container_name: database
+    restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -8,7 +21,47 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres:/var/lib/postgresql/data:Z
+      - ./postgres:/var/lib/postgresql/data
 
+  pgadmin4:
+    image: elestio/pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+
+  backend:
+    container_name: backend
+    restart: always
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+
+  dashboard:
+    container_name: dashboard
+    restart: always
+    depends_on:
+      - db
+      - backend
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./dashboard:/app
+
+      
 volumes:
   postgres:
