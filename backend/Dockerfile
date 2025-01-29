@@ -10,6 +10,9 @@ RUN npm install -g pnpm
 # Copy the package.json and pnpm-lock.yaml files
 COPY package.json pnpm-lock.yaml ./
 
+# Install nestjs
+RUN npm install -g @nestjs/cli
+
 # Install the dependencies
 RUN pnpm install
 
