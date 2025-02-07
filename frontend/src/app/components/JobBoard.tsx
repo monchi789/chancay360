@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 export default function JobBoard() {
     return (
       <section className="py-24 bg-[#F4F3EE]">
@@ -18,16 +20,7 @@ export default function JobBoard() {
             </p>
             <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
               <div className="relative">
-               
-                <a
-                  href="/bolsa-empleo"
-                  className="relative inline-flex items-center text-red-700 text-xl font-bold bg-[#F4F3EE] px-10 py-5 rounded-full transition-all hover:bg-red-100 shadow-lg hover:shadow-xl"
-                >
-                  Ir a la Bolsa de Empleo
-                  <span className="ml-3 transition-transform group-hover:translate-x-1">
-                    ↗
-                  </span>
-                </a>
+                <Button text="Ir a la Bolsa de Empleo" href="/bolsa" variant="secondary"/> 
               </div>
             </div>
           </div>

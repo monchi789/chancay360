@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 export default function ValueProposition() {
     const CARDS = [
       {
@@ -43,12 +45,7 @@ export default function ValueProposition() {
                   <h3 className="text-2xl font-bold mt-6 text-gray-900">{card.title}</h3>
                   <p className="text-lg text-gray-700 mt-4 leading-relaxed flex-grow">{card.description}</p>
                   <div className="mt-12 flex justify-center w-full">
-                    <a 
-                      href="#" 
-                      className={`px-8 py-4 text-white text-lg font-semibold rounded-full ${card.color} ${card.hoverColor} transition-all duration-500 ease-in-out shadow-md hover:shadow-lg transform hover:scale-110`}
-                    >
-                      {card.link} &rarr;
-                    </a>
+                    <Button text={card.link} href="/futuro" />
                   </div>
                 </div>
               </div>

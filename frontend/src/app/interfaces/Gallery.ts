@@ -4,3 +4,4 @@ export interface Gallery {
   description?: string | null;
   publicationDate: Date | null;
 }
+//Interface para Galeria

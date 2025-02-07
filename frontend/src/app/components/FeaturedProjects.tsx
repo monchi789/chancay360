@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Button from "./Button";
 
 export default function FeaturedProjects() {
   const projects = [
@@ -49,15 +50,8 @@ export default function FeaturedProjects() {
                 </h3>
                 <p className="text-white mt-4 text-lg">{project.description}</p>
                 <div className="mt-8">
-                  <a
-                    href={project.link}
-                    className="inline-flex items-center text-white bg-red-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl"
-                  >
-                    {project.buttonText}
-                    <span className="ml-2 transition-transform group-hover:translate-x-1">
-                      ↗
-                    </span>
-                  </a>
+                 <Button text={project.buttonText} href={project.link}/> 
+                  
                 </div>
               </div>
             </div>

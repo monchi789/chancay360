@@ -23,7 +23,7 @@ body {
 }
 
 
-/* Clases para el modo oscuro manual con Tailwind */
+/* Clases para el modo oscuro manual con Tailwind css */
 .dark {
   --background: var(--background-dark);
   --foreground: var(--foreground-dark);

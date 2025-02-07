@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import QueryProvider from "./components/QueryProvider"; // ✅ Importa el provider separado
-
+//Fuente local
 const Raleway = localFont({
   src: [
     { path: "./fonts/Raleway-Black.ttf", weight: "900", style: "normal" },
@@ -19,7 +19,7 @@ const Raleway = localFont({
   ],
   variable: "--font-raleway",
 });
-
+//Metadatos
 export const metadata: Metadata = {
   title: "Chancay 360 - El Nuevo Epicentro Logístico de Latinoamérica",
   description:

@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 export default function CTA() {
     return (
       <section className="py-20 bg-[#F4F3EE] text-center relative">
@@ -17,18 +19,9 @@ export default function CTA() {
   
           {/* Botones alineados correctamente */}
           <div className="mt-10 flex justify-center space-x-6">
-            <a
-              href="/contacto"
-              className="inline-flex items-center justify-center w-48 px-6 py-3 border border-red-600 text-red-600 font-semibold rounded-full transition-all hover:bg-red-100 text-lg"
-            >
-              Contáctanos
-            </a>
-            <a
-              href="/empieza"
-              className="inline-flex items-center justify-center w-48 px-6 py-3 bg-red-600 text-white font-semibold rounded-full shadow-md hover:bg-red-700 transition-all text-lg"
-            >
-              Comienza Ahora
-            </a>
+           <Button text="Contáctanos" href="/contacto" variant="secondary" />
+            <Button text="omienza Ahora" href="/empieza" />
+          
           </div>
   
           {/* Línea inferior */}

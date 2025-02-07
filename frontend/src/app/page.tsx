@@ -6,7 +6,9 @@ import JobBoard from "@/app/components/JobBoard";
 import CallToAction from "@/app/components/CallToAction";
 export default function Home() {
   return (
+    // Pagina Principal
     <main>
+      
       <Hero />
       <ValueProposition />
       <News />

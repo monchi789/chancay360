@@ -13,8 +13,9 @@ export interface Publication {
 }
 export enum CATEGORY {
   "Noticias",
+  "Conferencias",
   "Inversiones y Desarrollo",
   "Proyectos Destacados",
-  "Eventos y Conferencias",
+  "Eventos ",
   "Educación y Capacitación",
 }

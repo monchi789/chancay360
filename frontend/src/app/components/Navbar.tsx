@@ -19,7 +19,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > window.innerHeight * 0.7);
+      setIsScrolled(window.scrollY > 80);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -28,11 +28,11 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full h-20 transition-all duration-300 z-50 flex items-center px-4 sm:px-10
-        ${isScrolled ? "bg-white shadow-md" : "bg-white/10 backdrop-blur-md"}
+      className={`fixed top-0 left-0 w-full h-20 transition-all duration-300 z-50 flex items-center 
+        ${isScrolled ? "bg-white shadow-lg" : "bg-white/10 backdrop-blur-lg"}
       `}
     >
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-8 flex items-center justify-between w-full">
         {/* LOGO DINÁMICO */}
         <Link href="/" className="flex items-center">
           <Image
@@ -45,13 +45,13 @@ export default function Navbar() {
         </Link>
 
         {/* MENÚ DESKTOP */}
-        <div className="hidden md:flex space-x-6 lg:space-x-10">
+        <div className="hidden md:flex space-x-8">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`text-lg font-medium transition ${
-                isScrolled ? "text-gray-900 hover:text-blue-600" : "text-white hover:text-gray-200"
+                isScrolled ? "text-gray-900 hover:text-red-600" : "text-white hover:text-gray-300"
               }`}
             >
               {link.name}
@@ -72,7 +72,7 @@ export default function Navbar() {
 
       {/* MENÚ MÓVIL */}
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-md z-40 transition-transform transform ${
+        className={`fixed inset-0 bg-black/50 backdrop-blur-lg z-40 transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:hidden`}
       >
@@ -85,7 +85,7 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="block text-gray-900 hover:text-blue-600 transition text-lg font-medium"
+                  className="block text-gray-900 hover:text-red-600 transition text-lg font-medium"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
