@@ -23,17 +23,6 @@ services:
     volumes:
       - postgresql:/var/lib/postgresql/data
 
-  backend:
-    restart: always
-    depends_on:
-      - db
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend:/app
-    ports:
-      - "8000:8000"
 
   pgadmin4:
     image: elestio/pgadmin
@@ -46,6 +35,19 @@ services:
       - "8080:8080"
     volumes:
       - ./servers.json:/pgadmin4/servers.json
+  
+  backend:
+    restart: always
+    container_name: backend
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
   
   dashboard:
     container_name: dashboard
