@@ -19,26 +19,20 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Stage 2: Serve the React application
-FROM node:current-alpine3.20
+# Verificar la existencia de la carpeta 'dist' después del build
+RUN ls -l /app/dist
 
-# Install serve to serve the build directory
-RUN npm install -g serve
+# Stage 2: Serve the React application using Nginx
+FROM nginx:alpine
 
-# Copy the build output from the previous stage
-COPY --from=build /app/dist /app/dist
+# Copy the built React application from the first stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy the wait_for_backend.sh script
-COPY wait_for_backend.sh /app/
+# Verify the contents of the 'html' folder
+RUN ls -l /usr/share/nginx/html
 
-# Make the script executable
-RUN chmod +x /app/wait_for_backend.sh
+# Copy the Nginx configuration file
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Set the working directory
-WORKDIR /app
-
-# Expose the port the app runs on
+# Expose the port
 EXPOSE 5173
-
-# Serve the application after waiting for the backend
-CMD sh /app/wait_for_backend.sh && serve -s dist -l 5173
