@@ -1,46 +1,43 @@
-# Use Node.js Alpine as base image
+# Usa una imagen base de Node.js con Alpine
 FROM node:current-alpine3.20
 
-# Set working directory
+# Define el directorio de trabajo
 WORKDIR /app
 
-# Set shell and environment variables for Alpine
-ENV SHELL=/bin/sh
-ENV ENV=/etc/profile
+# Instala dependencias del sistema para compilar paquetes
+RUN apk add --no-cache python3 make g++
 
-# Install pnpm and configure global directory
-ENV PNPM_HOME="/root/.local/share/pnpm"
-ENV PATH="${PNPM_HOME}:${PATH}"
-
-# Create profile file for shell configuration
-RUN echo "export SHELL=/bin/sh" >> /etc/profile && \
-    echo "export PNPM_HOME=/root/.local/share/pnpm" >> /etc/profile && \
-    echo "export PATH=$PNPM_HOME:$PATH" >> /etc/profile
-
-# Install pnpm and NestJS CLI
+# Instala pnpm y NestJS CLI de manera global
 RUN npm install -g pnpm && \
-    . /etc/profile && \
     pnpm setup && \
     pnpm install -g @nestjs/cli
 
-# Copy package files
+# Agrega pnpm al PATH
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+# Copia los archivos de dependencias antes del código fuente
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN . /etc/profile && pnpm install --frozen-lockfile
+# Instala las dependencias sin modificar el lockfile
+RUN pnpm install --frozen-lockfile
 
-# Copy wait for database script
+# Instala `@types/node` para evitar errores con `process.env`
+RUN pnpm add -D @types/node
+
+# Copia el script de espera de la base de datos
 COPY wait_for_db.sh ./
 RUN chmod +x ./wait_for_db.sh
 
-# Copy source code
+# Copia el código fuente
 COPY . .
 
-# Build application
-RUN . /etc/profile && pnpm run build
+# Construye la aplicación
+RUN pnpm run build
 
-# Expose port
+# Expone el puerto 3000
 EXPOSE 3000
 
-# Start the application
-CMD . /etc/profile && sh ./wait_for_db.sh && pnpm run start
+# Comando de inicio
+ENTRYPOINT ["sh", "./wait_for_db.sh"]
+CMD ["pnpm", "run", "start"]
