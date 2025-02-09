@@ -16,8 +16,11 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 80);
     };
@@ -25,6 +28,13 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Evita el error de hidratación mostrando un estado inicial seguro
+  if (!hasMounted) {
+    return (
+      <nav className="fixed top-0 left-0 w-full h-20 bg-white/10 backdrop-blur-lg"></nav>
+    );
+  }
 
   return (
     <nav

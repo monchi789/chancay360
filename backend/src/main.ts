@@ -31,7 +31,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentaryFactory);
 
   app.enableCors({
-    origin: configService.get('CORS_ORIGIN', '*'),
+    origin: configService.get('CORS_ORIGIN', '*').split(','),
     methods: configService.get('CORS_METHODS', 'GET,POST,PUT,DELETE,PATCH'),
     allowedHeaders: configService.get<string>(
       'CORS_ALLOWED_HEADERS',
