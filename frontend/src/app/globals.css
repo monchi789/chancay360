@@ -2,20 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables de colores */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-light: #F4F3EE;
+  --foreground-light: #171717;
+
+  --background-dark: #0a0a0a;
+  --foreground-dark: #F4F3EE;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
+
+/* Aplicación de los colores en el body */
 body {
+  margin: 0;
+  padding: 0;
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  font-family: var(--font-raleway), Arial, Helvetica, sans-serif;
+}
+
+
+/* Clases para el modo oscuro manual con Tailwind css */
+.dark {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
+}
+
+.light {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
 }

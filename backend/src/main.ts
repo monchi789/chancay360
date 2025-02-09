@@ -31,10 +31,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentaryFactory);
 
   app.enableCors({
-    origin: configService
-      .get<string>('CORS_ORIGIN', '*')
-      .split(',')
-      .map((origin) => origin.trim()),
+    origin: configService.get('CORS_ORIGIN', '*').split(','),
     methods: configService.get('CORS_METHODS', 'GET,POST,PUT,DELETE,PATCH'),
     allowedHeaders: configService.get<string>(
       'CORS_ALLOWED_HEADERS',
@@ -46,7 +43,7 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 8000);
 }
 
 bootstrap();
