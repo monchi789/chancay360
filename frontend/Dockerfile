@@ -19,23 +19,6 @@ COPY . .
 # Construye la aplicación Next.js
 RUN pnpm run build
 
-# Etapa 2: Producción
-FROM node:20-alpine AS production
-
-# Establece el directorio de trabajo
-WORKDIR /app
-
-# Instala pnpm globalmente
-RUN npm install -g pnpm
-
-# Copia solo lo necesario desde la imagen de compilación
-COPY --from=build /app/package.json ./
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-
-# Reinstalar solo dependencias de producción para asegurar que Next.js esté disponible
-RUN pnpm install --prod
-
 # Expone el puerto de la aplicación
 EXPOSE 3000
 
