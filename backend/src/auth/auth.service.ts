@@ -6,9 +6,9 @@ import {
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
-import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +23,7 @@ export class AuthService {
     const username = await this.userService.findByEmail(email);
 
     if (username) {
-      throw new BadRequestException('User with that emails is register');
+      throw new BadRequestException('User with that email is registered');
     }
 
     const hashedPassword = await bcrypt.hash(password, this.SALT_ROUNDS);
@@ -38,7 +38,7 @@ export class AuthService {
 
     const savedUser = await this.userService.findByEmailWithPassword(email);
     if (savedUser?.password !== hashedPassword) {
-      console.error('Password its not equal');
+      console.error('Password is not equal');
     }
 
     return {
@@ -58,7 +58,7 @@ export class AuthService {
       const validPassword = await bcrypt.compare(password, user.password);
 
       if (!validPassword) {
-        throw new UnauthorizedException('Credential invalids');
+        throw new UnauthorizedException('Credentials invalid');
       }
     } catch {
       throw new UnauthorizedException(
@@ -86,7 +86,7 @@ export class AuthService {
       const user = await this.userService.findByEmail(payload.email);
 
       if (!user) {
-        new UnauthorizedException('User not found');
+        throw new UnauthorizedException('User not found');
       }
 
       const newAccessToken = await this.jwtService.signAsync(
@@ -99,7 +99,7 @@ export class AuthService {
 
       return { accessToken: newAccessToken, refreshToken };
     } catch {
-      throw new UnauthorizedException('Refresh token is invalid o expire');
+      throw new UnauthorizedException('Refresh token is invalid or expired');
     }
   }
 
