@@ -1,38 +1,26 @@
-# Stage 1: Build the Next.js application
-FROM node:lts-alpine as build-stage
+# Usa una versión estable de Node.js con Alpine
+FROM node:20-alpine
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-
+# Define el directorio de trabajo
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+# Instala pnpm globalmente
+RUN npm install -g pnpm
 
-# Install dependencies
+# Copia los archivos de dependencias antes del código fuente
+COPY package.json pnpm-lock.yaml ./
+
+# Instala las dependencias sin modificar el lockfile
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
+# Copia el código fuente después de instalar las dependencias
 COPY . .
 
-# Build the Next.js application
+# Construye la aplicación Next.js
 RUN pnpm build
 
-# Stage 2: Setup the production environment
-FROM node:lts-alpine
-
-WORKDIR /app
-
-# Copy necessary files from the build stage
-COPY --from=build-stage /app/next.config.js ./
-COPY --from=build-stage /app/public ./public
-COPY --from=build-stage /app/.next ./.next
-COPY --from=build-stage /app/node_modules ./node_modules
-COPY --from=build-stage /app/package.json ./package.json
-
-# Expose the port the app runs on
+# Expone el puerto 3000
 EXPOSE 3000
 
-# Set the command to start the node server
+# Comando de inicio en producción
 CMD ["pnpm", "start"]
