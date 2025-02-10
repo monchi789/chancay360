@@ -1,38 +1,32 @@
-# Stage 1: Build the React application
-FROM node:current-alpine3.20 AS build
+# Usa una versión estable de Node.js con Alpine
+FROM node:20-alpine
 
-# Set the working directory
+# Define el directorio de trabajo
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# Instala pnpm de forma global
+RUN npm install -g pnpm 
 
-# Copy the package.json and pnpm-lock.yaml files
+# Copia los archivos de dependencias antes del código fuente
 COPY package.json pnpm-lock.yaml ./
 
-# Install the dependencies
-RUN pnpm install
+# Aprueba manualmente los builds y fuerza la ejecución de scripts
+RUN pnpm config set enable-scripts true && pnpm approve-builds @nestjs/core @scarf/scarf sharp
 
-# Copy the rest of the files
+# Instala las dependencias sin modificar el lockfile
+RUN pnpm install --no-frozen-lockfile
+
+# Copia el código fuente después de instalar las dependencias
 COPY . .
 
-# Build the application
+# Da permisos de ejecución al script de espera de la base de datos
+RUN chmod +x ./wait_for_db.sh
+
+# Construye la aplicación
 RUN pnpm run build
 
-# Verificar la existencia de la carpeta 'dist' después del build
-RUN ls -l /app/dist
+# Expone el puerto 8000
+EXPOSE 8000
 
-# Stage 2: Serve the React application using Nginx
-FROM nginx:alpine
-
-# Copy the built React application from the first stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Verify the contents of the 'html' folder
-RUN ls -l /usr/share/nginx/html
-
-# Copy the Nginx configuration file
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose the port
-EXPOSE 5173
+# Comando de inicio en producción
+CMD sh /app/wait_for_db.sh && pnpm run start:prod
