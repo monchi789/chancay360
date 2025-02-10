@@ -36,38 +36,42 @@ services:
       - ./servers.json:/pgadmin4/servers.json
 
   backend:
-    build: ./backend
-    container_name: backend
-    restart: always
-    depends_on:
-      - db
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    ports:
-      - "8000:8000"
+  build: ./backend
+  container_name: backend
+  restart: always
+  depends_on:
+    - db
+  volumes:
+    - ./backend:/app:ro
+    - backend_node_modules:/app/node_modules
+  ports:
+    - "8000:8000"
 
-  dashboard:
-    build: ./dashboard
-    container_name: dashboard
-    restart: always
-    depends_on:
-      - db
-      - backend
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./dashboard:/app
+dashboard:
+  build: ./dashboard
+  container_name: dashboard
+  restart: always
+  depends_on:
+    - db
+    - backend
+  ports:
+    - "5173:5173"
+  volumes:
+    - ./dashboard:/app:ro
+    - dashboard_node_modules:/app/node_modules
 
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+frontend:
+  build: ./frontend
+  container_name: frontend
+  restart: always
+  ports:
+    - "3000:3000"
+  volumes:
+    - ./frontend:/app:ro
+    - frontend_node_modules:/app/node_modules
 
 volumes:
   postgresql:
+  backend_node_modules:
+  dashboard_node_modules:
+  frontend_node_modules:
