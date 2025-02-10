@@ -5,7 +5,7 @@ FROM node:current-alpine3.20
 WORKDIR /app
 
 # Instala pnpm 
-RUN npm install -g pnpm && 
+RUN npm install -g pnpm 
 
 # Copia los archivos de dependencias antes del código fuente
 COPY package.json pnpm-lock.yaml ./
