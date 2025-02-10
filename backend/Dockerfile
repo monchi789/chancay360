@@ -13,12 +13,11 @@ COPY package.json pnpm-lock.yaml ./
 # Establece la variable de entorno para forzar la ejecución de scripts
 ENV ENABLE_PNPM_SCRIPTS=true
 
-# Aprueba manualmente los builds ignorados y habilita scripts
-RUN pnpm config set enable-scripts true \
-    && pnpm approve-builds @nestjs/core @scarf/scarf sharp
-
 # Instala las dependencias sin modificar el lockfile
 RUN pnpm install --no-frozen-lockfile
+
+# Aprueba manualmente los builds ignorados y fuerza su ejecución
+RUN pnpm rebuild @nestjs/core @scarf/scarf sharp && pnpm run postinstall
 
 # Copia el código fuente después de instalar las dependencias
 COPY . .
