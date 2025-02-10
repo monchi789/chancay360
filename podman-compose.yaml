@@ -38,16 +38,13 @@ services:
       - ./servers.json:/pgadmin4/servers.json:Z
 
   backend:
-    build: 
-      context: ./backend
-      args:
-        - NODE_ENV=production
+    build: ./backend
     container_name: backend
     restart: always
     depends_on:
       - db
     volumes:
-      - ./backend:/app:Z  
+      - ./backend:/app:Z
     ports:
       - "8000:8000"
 
