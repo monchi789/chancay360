@@ -1,40 +1,73 @@
-backend:
-  build: ./backend
-  container_name: backend
-  restart: always
-  depends_on:
-    - db
-  volumes:
-    - ./backend:/app:ro
-    - backend_node_modules:/app/node_modules
-  ports:
-    - "8000:8000"
+services:
+  nginx:
+    image: "jc21/nginx-proxy-manager:latest"
+    restart: always
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
 
-dashboard:
-  build: ./dashboard
-  container_name: dashboard
-  restart: always
-  depends_on:
-    - db
-    - backend
-  ports:
-    - "5173:5173"
-  volumes:
-    - ./dashboard:/app:ro
-    - dashboard_node_modules:/app/node_modules
+  db:
+    image: postgres
+    container_name: database
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgresql:/var/lib/postgresql/data
 
-frontend:
-  build: ./frontend
-  container_name: frontend
-  restart: always
-  ports:
-    - "3000:3000"
-  volumes:
-    - ./frontend:/app:ro
-    - frontend_node_modules:/app/node_modules
+  pgadmin4:
+    image: elestio/pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "8000:8000"
+
+  dashboard:
+    build: ./dashboard
+    container_name: dashboard
+    restart: always
+    depends_on:
+      - db
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./dashboard:/app
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 
 volumes:
   postgresql:
-  backend_node_modules:
-  dashboard_node_modules:
-  frontend_node_modules:
