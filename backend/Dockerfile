@@ -23,7 +23,7 @@ RUN chmod +x ./wait_for_db.sh
 RUN pnpm run build
 
 # Expone el puerto 3000
-EXPOSE 3000
+EXPOSE 8000
 
 # Comando de inicio en producción
 CMD sh /app/wait_for_db.sh && pnpm run start:prod

@@ -36,39 +36,32 @@ services:
       - ./servers.json:/pgadmin4/servers.json
 
   backend:
-    restart: always
+    build: ./backend
     container_name: backend
+    restart: always
     depends_on:
       - db
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
 
   dashboard:
+    build: ./dashboard
     container_name: dashboard
     restart: always
     depends_on:
       - db
       - backend
-      - nginx
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     volumes:
       - ./dashboard:/app
 
   frontend:
+    build: ./frontend
     container_name: frontend
     restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
