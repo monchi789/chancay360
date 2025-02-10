@@ -7,14 +7,13 @@ WORKDIR /app
 # Instala pnpm globalmente
 RUN npm install -g pnpm
 
-# Copia solo los archivos esenciales para instalar dependencias
-COPY package.json pnpm-lock.yaml ./
+
+# Copia el resto del código fuente
+COPY . .
 
 # Instala todas las dependencias, incluidas las de desarrollo
 RUN pnpm install
 
-# Copia el resto del código fuente
-COPY . .
 
 # Construye la aplicación Next.js
 RUN pnpm run build
