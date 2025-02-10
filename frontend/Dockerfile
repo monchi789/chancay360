@@ -23,4 +23,4 @@ RUN pnpm run build
 EXPOSE 3000
 
 # Comando de inicio
-CMD ["pnpm", "run", "start"]
+CMD pnpm run start
