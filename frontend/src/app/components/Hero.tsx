@@ -6,7 +6,7 @@ export default function Hero() {
       {/* Imagen de fondo */}
       <div
         className="absolute inset-0 bg-cover bg-center rounded-b-[40px]"
-        style={{ backgroundImage: "url('/images/fondo.png')" }}
+        style={{ backgroundImage: "url('/images/fondo.webp')" }}
       >
         <div className="absolute inset-0 bg-black/70 lg:bg-black/50 rounded-b-[40px]"></div>
       </div>
