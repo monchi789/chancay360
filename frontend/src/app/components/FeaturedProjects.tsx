@@ -7,7 +7,7 @@ export default function FeaturedProjects() {
       title: "Zona de Desarrollo Logístico",
       description:
         "Ubicación estratégica cerca del puerto, ideal para centros de distribución y comercio.",
-      image: "/images/proyecto1.png",
+      image: "/images/proyecto1.webp",
       link: "#",
       buttonText: "Explorar",
     },
@@ -15,7 +15,7 @@ export default function FeaturedProjects() {
       title: "Proyectos Turísticos en la Costa",
       description:
         "Oportunidades en hoteles y desarrollos turísticos en Chancay.",
-      image: "/images/proyecto1.png",
+      image: "/images/proyecto1.webp",
       link: "#",
       buttonText: "Ver Más",
     },

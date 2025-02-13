@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-10 border-b border-gray-400 pb-8">
           {/* Logo */}
           <div className="flex flex-col items-center sm:items-start">
-            <Image src="/images/logoFooter.png" alt="Chancay 360" width={140} height={50} />
+            <Image src="/images/logoFooter.webp" alt="Chancay 360" width={140} height={50} />
           </div>
 
           {/* Contacto */}
