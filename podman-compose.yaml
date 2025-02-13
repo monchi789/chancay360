@@ -43,8 +43,6 @@ services:
     restart: always
     depends_on:
       - db
-    volumes:
-      - ./backend:/app:Z
     ports:
       - "8000:8000"
 
@@ -57,8 +55,6 @@ services:
       - backend
     ports:
       - "5173:5173"
-    volumes:
-      - ./dashboard:/app:Z
 
   frontend:
     build: ./frontend
@@ -68,8 +64,6 @@ services:
       - backend
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app:Z
 
 volumes:
   postgresql:
