@@ -1,6 +1,6 @@
 "use client";
 
-import { usePublications } from "@/app/Hooks/usePublicationTypes";
+import { usePublications } from "@/app/hooks/usePublicationTypes";
 import Image from "next/image";
 import Button from "./Button";
 
