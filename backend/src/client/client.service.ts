@@ -1,15 +1,15 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import {
+  FilterOperator,
+  paginate,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
 import { Client } from './entities/client.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaginationDto } from 'src/shared/dto/pagination.dto';
-import { PaginationService } from 'src/shared/util/pagination.util';
 
 @Injectable()
 export class ClientService {
@@ -19,72 +19,103 @@ export class ClientService {
   ) {}
 
   async create(createClientDto: CreateClientDto) {
-    const newClient = this.clientRepository.create(createClientDto);
-    return await this.clientRepository.save(newClient);
-  }
-
-  async findAll(paginationDto?: PaginationDto) {
-    const { page, limit } = paginationDto || {};
-
-    return PaginationService.paginate(this.clientRepository, {
-      page,
-      limit,
-      select: {
-        idClient: true,
-        name: true,
-        lastName: true,
-        enterprise: true,
-        position: true,
-        email: true,
-        authorized: true,
-      },
-    });
-  }
-
-  async findOne(idClient: string) {
     try {
-      const client = await this.clientRepository.findOne({
-        where: { idClient },
-        select: [
-          'idClient',
+      const newClient = this.clientRepository.create(createClientDto);
+      return await this.clientRepository.save(newClient);
+    } catch {
+      throw new InternalServerErrorException('Error to create Client');
+    }
+  }
+
+  async findAll(query: PaginateQuery): Promise<Paginated<Client>> {
+    try {
+      return await paginate(query, this.clientRepository, {
+        sortableColumns: ['name', 'lastName'],
+        nullSort: 'last',
+        defaultSortBy: [['createAt', 'ASC']],
+        searchableColumns: [
           'name',
           'lastName',
+          'email',
+          'enterprise',
+          'authorization',
+        ],
+        select: [
+          'id',
+          'name',
+          'lastName',
+          'email',
+          'phone',
           'enterprise',
           'position',
+          'authorization',
+        ],
+        filterableColumns: { authorization: [FilterOperator.EQ] },
+      });
+    } catch {
+      throw new InternalServerErrorException('Error to get all Client');
+    }
+  }
+
+  async findOne(id: string) {
+    try {
+      const client = await this.clientRepository.findOne({
+        where: { id },
+        select: [
+          'id',
+          'name',
+          'lastName',
           'email',
-          'authorized',
+          'phone',
+          'enterprise',
+          'position',
+          'authorization',
         ],
       });
 
       if (!client) {
-        throw new Error('Client not found');
+        throw new Error(`Error to get Client with id ${id}`);
       }
 
       return client;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new BadRequestException('Client not found');
-      }
+    } catch {
+      throw new InternalServerErrorException(
+        `Error to get Client with id ${id}`,
+      );
     }
   }
 
-  async update(idClient: string, updateClientDto: UpdateClientDto) {
-    const client = this.clientRepository.update(idClient, updateClientDto);
+  async update(id: string, updateClientDto: UpdateClientDto) {
+    const client = await this.clientRepository.findOne({ where: { id } });
 
-    if ((await client).affected === 0) {
-      throw new BadRequestException(`Client with ID ${idClient} not found`);
+    if (!client) {
+      throw new Error(`Client with id ${id} not found`);
     }
 
-    return this.clientRepository.findOne({ where: { idClient } });
+    try {
+      await this.clientRepository.update(id, updateClientDto);
+      return this.clientRepository.findOne({ where: { id } });
+    } catch {
+      throw new InternalServerErrorException(
+        `Error to update client with id ${id}`,
+      );
+    }
   }
 
-  async remove(idClient: string) {
-    const client = await this.clientRepository.delete(idClient);
+  async remove(id: string) {
+    const client = await this.clientRepository.findOne({ where: { id } });
 
-    if (client.affected === 0) {
-      throw new BadRequestException(`Client with ID ${idClient} not found`);
+    if (!client) {
+      throw new Error(`Client with id ${id} not found`);
     }
 
-    return { message: `Client with ID ${idClient} deleted` };
+    try {
+      await this.clientRepository.delete(id);
+      return { message: `Client with id ${id} was deleted` };
+    } catch {
+      throw new InternalServerErrorException(
+        `Error to delete client with id  ${id}`,
+      );
+    }
   }
 }

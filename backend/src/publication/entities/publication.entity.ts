@@ -6,14 +6,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PublicationCategory } from '../../shared/enums/publicationCategory.enum';
 
 @Entity()
 export class Publication {
   @PrimaryGeneratedColumn('uuid')
-  idPublication: string;
-
-  @Column({ type: 'varchar' })
-  author: string;
+  id: string;
 
   @Column({ type: 'varchar' })
   title: string;
@@ -21,17 +19,20 @@ export class Publication {
   @Column({ type: 'text' })
   content: string;
 
-  @Column({ nullable: true, type: 'text', array: true })
+  @Column({ type: 'text', array: true })
   cover: string[];
 
-  @Column({ type: Date, default: () => 'CURRENT_DATE' })
-  publicationDate: Date;
+  @Column({ type: 'text', array: true })
+  files: string[];
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'enum', enum: PublicationCategory })
   category: string;
 
-  @Column({ nullable: true, type: 'text', array: true })
-  file?: string[];
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
+  publicationDate: Date;
+
+  @Column({ type: 'boolean', default: false })
+  published: boolean;
 
   @CreateDateColumn()
   createAt: Date;

@@ -10,7 +10,7 @@ import {
 @Entity()
 export class Client {
   @PrimaryGeneratedColumn('uuid')
-  idClient: string;
+  id: string;
 
   @Column({ type: 'varchar' })
   name: string;
@@ -19,16 +19,19 @@ export class Client {
   lastName: string;
 
   @Column({ type: 'varchar' })
+  email: string;
+
+  @Column({ type: 'varchar' })
+  phone: string;
+
+  @Column({ type: 'varchar' })
   enterprise: string;
 
   @Column({ type: 'varchar' })
   position: string;
 
-  @Column({ type: 'varchar' })
-  email: string;
-
   @Column({ type: 'boolean', default: false })
-  authorized?: boolean;
+  authorization: boolean;
 
   @CreateDateColumn()
   createAt: Date;

@@ -1,33 +1,4 @@
-import { IsOptional, IsString, MinLength, IsArray } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreatePublicationDto } from './create-publication.dto';
 
-export class UpdatePublicationDto {
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  title: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  author: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  content: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  category: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true }) 
-  existingCover?: string[]; 
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  existingFile?: string[]; 
-}
+export class UpdatePublicationDto extends PartialType(CreatePublicationDto) {}
