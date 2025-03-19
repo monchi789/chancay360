@@ -1,5 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFiles,
+} from '@nestjs/common';
 import { PublicationService } from './publication.service';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 
@@ -8,8 +19,18 @@ export class PublicationController {
   constructor(private readonly publicationService: PublicationService) {}
 
   @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto) {
-    return this.publicationService.create(createPublicationDto);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 5 },
+      { name: 'files', maxCount: 5 },
+    ]),
+  )
+  create(
+    @Body() createPublicationDto: CreatePublicationDto,
+    @UploadedFiles()
+    files: { cover?: Express.Multer.File[]; files?: Express.Multer.File[] },
+  ) {
+    return this.publicationService.create(createPublicationDto, files);
   }
 
   @Get()
@@ -23,7 +44,10 @@ export class PublicationController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePublicationDto: UpdatePublicationDto,
+  ) {
     return this.publicationService.update(+id, updatePublicationDto);
   }
 
