@@ -72,11 +72,9 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+
+
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -92,6 +90,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -100,6 +99,10 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -114,7 +117,46 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@theme {
+  --color-grain-brown-50: #faf7f2;
+  --color-grain-brown-100: #f3ece1;
+  --color-grain-brown-200: #e0ceb3;
+  --color-grain-brown-300: #d6bd9b;
+  --color-grain-brown-400: #c59c72;
+  --color-grain-brown-500: #b88557;
+  --color-grain-brown-600: #ab724b;
+  --color-grain-brown-700: #8e5c40;
+  --color-grain-brown-800: #734b39;
+  --color-grain-brown-900: #5e3f30;
+  --color-grain-brown-950: #322018;
+
+  --color-prussian-blue-50: #f2f7fd;
+  --color-prussian-blue-100: #e4eefa;
+  --color-prussian-blue-200: #c4dcf3;
+  --color-prussian-blue-300: #8fc0ea;
+  --color-prussian-blue-400: #549fdc;
+  --color-prussian-blue-500: #2d83ca;
+  --color-prussian-blue-600: #1e67ab;
+  --color-prussian-blue-700: #1a528a;
+  --color-prussian-blue-800: #194773;
+  --color-prussian-blue-900: #163351;
+  --color-prussian-blue-950: #112640;
+
+  --color-bright-red-50: #fff1ef;
+  --color-bright-red-100: #ffe0dc;
+  --color-bright-red-200: #ffc6bf;
+  --color-bright-red-300: #ff9e92;
+  --color-bright-red-400: #ff6754;
+  --color-bright-red-500: #ff371f;
+  --color-bright-red-600: #ff1c00;
+  --color-bright-red-700: #db1800;
+  --color-bright-red-800: #af1300;
+  --color-bright-red-900: #941708;
+  --color-bright-red-950: #520900;
 }
