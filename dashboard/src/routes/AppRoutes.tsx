@@ -1,6 +1,8 @@
 import MainLayout from "@/components/shared/MainLayout";
 import Home from "@/pages/Home";
 import HomePublication from "@/pages/publications/HomePublication";
+import CreatePublication from "@/pages/publications/CreatePublication";
+
 import { Route, Outlet, Routes } from "react-router-dom";
 
 const protectedRoutes = [
@@ -11,6 +13,10 @@ const protectedRoutes = [
   {
     path: "/publications",
     element: <HomePublication />,
+  },
+  {
+    path: "/publication",
+    element: <CreatePublication />,
   },
 ];
 

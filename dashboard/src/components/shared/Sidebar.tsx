@@ -68,7 +68,7 @@ export function AppSidebar() {
                 <SidebarGroup>
                   <SidebarGroupLabel asChild>
                     <CollapsibleTrigger>
-                      <InboxIcon/> <span className="ml-4 text-sm">Publicaciones</span>
+                      <InboxIcon/> <span className="ml-4 text-lg">Publicaciones</span>
                       <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </CollapsibleTrigger>
                   </SidebarGroupLabel>
@@ -76,26 +76,18 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                       <SidebarMenuItem>
                         <a
-                          href="/publications"
-                          className="block px-3 py-2 text-xs text-gray-700 rounded-md hover:bg-grain-brown-100"
+                          href="/publication"
+                          className="block px-3 py-2 text-base text-gray-700 rounded-md hover:bg-grain-brown-100"
                         >
                           Nueva Publicacion
                         </a>
                       </SidebarMenuItem>
                       <SidebarMenuItem>
                         <a
-                          href="/support"
-                          className="block px-3 py-2 text-xs text-gray-700 rounded-md hover:bg-grain-brown-100"
+                          href="/publications"
+                          className="block px-3 py-2 text-base text-gray-700 rounded-md hover:bg-grain-brown-100"
                         >
-                          Support
-                        </a>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                        <a
-                          href="/faq"
-                          className="block px-3 py-2 text-xs text-gray-700 rounded-md hover:bg-grain-brown-100"
-                        >
-                          FAQ
+                          Listar
                         </a>
                       </SidebarMenuItem>
                     </SidebarGroupContent>
